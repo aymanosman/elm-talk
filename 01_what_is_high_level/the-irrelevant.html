@@ -1,0 +1,18 @@
+<html>
+  <span id="mouse-position"></span>
+  <script>
+   var elem = document.getElementById("mouse-position");
+   setIt(1,1);
+   document.onmousemove = handle
+
+   function handle(e) {
+     setIt(e.pageX, e.pageY);
+   }
+
+   function setIt(x, y) {
+     elem.innerHTML = JSON.stringify([x, y]);
+   }
+   // What about cross browser support?
+   // http://stackoverflow.com/questions/7790725/javascript-track-mouse-position
+  </script>
+</html>
