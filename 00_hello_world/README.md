@@ -1,6 +1,9 @@
+When you are starting out http://elm-lang.org/try is a great place to experiement.
+
+If you want to see what compiling an Elm program looks like then follow the
+steps below (you can run the commands in this folder):
+
 ```sh
-npm install -g elm
-elm-package install
 elm-package install evancz/elm-html
 ```
 
