@@ -1,31 +1,24 @@
-# Elm - An introduction
-Why elm?
-web apps
-complex, rich interactive GUIs
-
+# Elm and the Elm architecture, dramatically simpler GUI programming.
 We will introduce Elm, a language for building applications in the browser. The
-focus of the language is making it easier to build complex graphical user
-interfaces by introducing language constructs that are able to model the apsects
-of GUIs. 
+focus of the language is to make it easier to build complex graphical user
+interfaces.
 
-Elm and the Elm architecture, dramatically simpler GUI programming.
 
 # Describing Elm, identifying the important characteristics of Elm
-* Pure Functional, referenctially transparent?, equational reasoning
-* Functional Reactive Programming (Signals, Behaviours, Time -> a, time varying
-  values)
+* Purely Functional
+* Functional Reactive Programming, representing values that change over time 
 * Declaritive (see 01_what_is_high_level, i.e. only the essential need be
   provided/communicated to solve a problem)
-* ? A domains specific language for describing interactive programs
 
 
 # Arguments in favour of Static Typing
 * dynamic typing fatigue
 * refactoring
-* types for high level design and reasoning
-* types represent programmer intent
-* acknowledgment that type systems and language need to be expressive enough to
-  allow the expression of enough patterns that programmers wish to express.
+* "No more runtime errors"*
+* types are a language for expressing high level design
+* types communicate programmer intent
+* CAVEAT: type systems need to be expressive enough to allow the programmer to
+  represent common programming tasks
 
 ## How to install
 http://elm-lang.org/install
