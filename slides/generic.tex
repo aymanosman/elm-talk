@@ -1,3 +1,6 @@
+% Local Variables:
+% TeX-engine: xetex
+% End:
 \documentclass{beamer}
 \usepackage{fontspec}
 \usefonttheme{serif}
@@ -126,7 +129,7 @@
 
 \begin{frame}[fragile]
   \frametitle{\insertsection: Named Functions}
-    \begin{lstlisting}
+\begin{lstlisting}
       -- JavaScript
       function square(n) {
         return n * n;
@@ -134,21 +137,31 @@
 
       -- Elm
       square n = n^2
-    \end{lstlisting}
+\end{lstlisting}
+
+  \pause
+  Math
+
+  $square(n) = n^2$
 \end{frame}
 
 \subsection{Anonymous Functions}
 
 \begin{frame}[fragile]
   \frametitle{\insertsection: Anonymous Functions}
-    \begin{lstlisting}
+\begin{lstlisting}
       -- JavaScript
       var f = function(x) { return x + 1; };
       var g = (x) => x + 1;
 
       -- Elm
       f = \x -> x + 1
-    \end{lstlisting}
+\end{lstlisting}
+
+  Math
+
+  $f = \lambdax -> x + 1$
+
 \end{frame}
 
 \subsection{Currying}
@@ -239,4 +252,3 @@
 \end{frame}
 
 \end{document}
-
