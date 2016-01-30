@@ -4,14 +4,19 @@ import Mouse
 
 main : Signal Html
 main =
-  Signal.map2 (view buttonMailbox.address) Mouse.position numClicks
+  Signal.map2 (view buttonMailbox.address)
+              Mouse.position numClicks
 
 view : Signal.Address () -> (Int, Int) -> Int -> Html
 view addr coords clicks =
   div []
-    [ div [] [text <| "Mouse position: " ++ (toString coords)]
-    , div [] [button [onClick addr ()] [text "Click Me!"]
-             , text (showClicks clicks)]
+    [ div []
+          [text <| "Mouse position: " ++ toString coords]
+    , div []
+          [ button [onClick addr ()]
+                   [text "Click Me!"]
+          , text (showClicks clicks)
+          ]
     ]
 
 buttonMailbox : Signal.Mailbox ()
