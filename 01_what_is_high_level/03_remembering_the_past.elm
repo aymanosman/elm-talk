@@ -3,7 +3,16 @@ import Mouse
 
 numClicks : Signal Int
 numClicks =
-  Signal.foldp (\a b -> b + 1) 0 Mouse.clicks
+  -- This is our focus. Given a signal of mouse clicks, we
+  -- produce a new signal of the number of times the mouse
+  -- was clicked so far.
+  Signal.foldp (\click_but_ignore b -> b + 1) 0 Mouse.clicks
+
+{-
+
+  foldp will take some explanation...
+
+-}
 
 view : Int -> Html
 view clicks =
