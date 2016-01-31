@@ -1,16 +1,19 @@
 import Graphics.Element exposing (..)
 import Graphics.Collage exposing (..)
 import Color exposing (..)
+import Mouse
 import Time
 
 main : Signal Element
-main = Signal.map view circlePos
+main = Signal.map2 view circlePos Mouse.position
 
-view : (Float, Float) -> Element
-view (x, y) =
+view : (Float, Float) -> (Int, Int) -> Element
+view (x, y) (mx, my) =
   collage 400 400
   [ circleAt x y
-  -- , show (x, y) |> toForm
+    -- uncomment below
+    |> move (-200, 200)
+    |> move (toFloat mx, toFloat -my)
   ]
 
 angle : Signal Float
