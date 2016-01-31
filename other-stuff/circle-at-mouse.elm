@@ -10,8 +10,7 @@ view : (Int, Int) -> Element
 view (x, y) =
   let w = 400
   in
-  [ circleAt x y
-  ]
+  [ circleAt x y]
   |> List.map (adjust w)
   |> collage w w
 
