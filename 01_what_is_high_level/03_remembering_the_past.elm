@@ -12,6 +12,10 @@ numClicks =
 
   foldp will take some explanation...
 
+  First off the type of Mouse.clicks is `Signal ()`, which
+  is pronounced signal of unit. Unit signifies that there
+  is no data associated with the click event.
+
 -}
 
 view : Int -> Html
