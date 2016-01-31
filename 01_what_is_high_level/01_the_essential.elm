@@ -11,9 +11,7 @@ main =
 
 {-
  A 'signal' is a value that changes over time. Notice that
- what we end up with is a value of type `Signal Html` which
- represents a component that displays the mouse position
- for all points in time.
+ what we end up with is a value of type `Signal Html`.
 
 ---
 ---

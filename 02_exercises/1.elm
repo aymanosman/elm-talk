@@ -2,8 +2,6 @@ import Html exposing (Html, text, div)
 import Mouse
 
 {-
- Try to stack things.
-
  Display the mouse position twice!
 
  Should look like this
