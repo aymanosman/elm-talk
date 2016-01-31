@@ -7,24 +7,19 @@ main : Signal Element
 main = Signal.map view circlePos
 
 view : (Float, Float) -> Element
-view (len, angle) =
-  let (x, y) = fromPolar (len, angle)
-  in
+view (x, y) =
   collage 400 400
   [ circleAt x y
   -- , show (x, y) |> toForm
   ]
 
+angle : Signal Float
+angle =
+  Signal.foldp (\_ angle -> angle + 1/10) 0 (Time.fps 30)
+
 circlePos : Signal (Float, Float)
 circlePos =
-  let f _ (r, angle) =
-        if angle < 360
-        then (r, angle + 1/10)
-        else start
-      start = (r, 0)
-      r = 50 --radius
-  in
-    Signal.foldp f start (Time.fps 30)
+  Signal.map (\angle -> fromPolar (50, angle)) angle
 
 circleAt : Float -> Float -> Form
 circleAt x y =
