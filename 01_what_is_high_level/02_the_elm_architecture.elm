@@ -3,13 +3,9 @@ import Html.Events exposing (onClick)
 import StartApp.Simple as StartApp
 
 {-
-
-
-  Problems:
-  1) Try to add a Decrement button
-
+  In the 'elm architecture', all apps break down into the same
+  three components. Model, view and update.
  -}
-
 
 main : Signal Html
 main =
@@ -33,7 +29,8 @@ view addr model =
   div []
     [ text (toString model)
     , div []
-          [button [onClick addr Increment] [text "increment"]]
+          [button [onClick addr Increment]
+                  [text "increment"]]
     ]
 
 
@@ -42,3 +39,10 @@ update action model =
   case action of
     Increment ->
       model + 1
+
+{-
+
+Problems:
+1) Try to add a Decrement button
+
+-}
