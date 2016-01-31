@@ -13,14 +13,17 @@ import StartApp.Simple as StartApp
 
 main : Signal Html
 main =
-  StartApp.start {model = init, view = view, update = update}
+  StartApp.start
+            { model = init
+            , view = view
+            , update = update
+            }
 
 
 type alias Model = Int
 
 type Action
   = Increment
-
 
 init : Model
 init = 1
@@ -29,7 +32,8 @@ view : Signal.Address Action -> Model -> Html
 view addr model =
   div []
     [ text (toString model)
-    , div [] [button [onClick addr Increment] [text "increment"]] 
+    , div []
+          [button [onClick addr Increment] [text "increment"]]
     ]
 
 
