@@ -7,16 +7,17 @@ import String
 import Debug exposing (log)
 import Json.Decode as Json
 import Signal exposing (Address)
-import StartApp.Simple
+import StartApp.Simple as StartApp
 import Json.Decode as Json
+
 
 main : Signal Html
 main =
-  StartApp.Simple.start {
-    model = init
-    , view = view
-    , update = withDebug << withLast <| update
-  }
+  StartApp.start
+            { model = init
+            , view = view
+            , update = withDebug << withLast <| update
+            }
 
 -- Model
 
