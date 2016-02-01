@@ -1,3 +1,5 @@
+module App where
+
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -86,6 +88,15 @@ update action model =
 
 
 -- View
+{-
+
+<div class="mui-container">
+<div class="mui-panel">
+<h1>My Title</h1>
+<button class="mui-btn mui-btn--primary mui-btn--raised">My Button</button>
+</div>
+</div>
+-}
 
 view : Address Action -> Model -> Html
 view addr model =
