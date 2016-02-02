@@ -1,14 +1,10 @@
-module App where
-
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import String
-import Debug exposing (log)
 import Json.Decode as Json
-import Signal exposing (Address)
 import StartApp.Simple as StartApp
-import Json.Decode as Json
+import Array exposing (Array)
 
 
 main : Signal Html
@@ -21,34 +17,33 @@ main =
 
 -- Model
 
-type alias Model = {
-  query : String
-  , choices : List Friend
+type alias Model =
+  { query : String
+  , choices : Array Candidate
   , highlighted : Int
-  , selected : Maybe Friend
+  , selected : Maybe Candidate
   , lastAction : Action
   }
 
+type alias Candidate = String
+
+type Action
+  = NoOp
+  | Query String
+  | ClickSelect Candidate
+  | EnterSelect
+  | Next
+  | Prev
+
+
 init : Model
-init = {
-  query = ""
-  , choices = []
+init =
+  { query = ""
+  , choices = Array.fromList []
   , selected = Nothing
   , highlighted = 1
   , lastAction = NoOp
   }
-
-type alias Friend = {
-  name : String
-  , photo : String
-  }
-
-type Action = NoOp
-  | Query String
-  | ClickSelect Friend
-  | EnterSelect
-  | Next
-  | Prev
 
 
 -- Update
@@ -56,100 +51,98 @@ type Action = NoOp
 update : Action -> Model -> Model
 update action model =
   let select f =
-        {model |
-           query = f.name
+        { model |
+          query = f
         , selected = Just f
-        , choices = []
+        , choices = Array.empty
         }
   in
   case action of
-    NoOp -> model
+    NoOp ->
+      model
+
     Query t ->
-      {model |
+      { model |
         query = t
-        , choices = mkChoices t
-        , highlighted = 1
-        , selected = Nothing}
+      , choices = mkChoices t
+      , highlighted = 1
+      , selected = Nothing
+      }
+
     ClickSelect f ->
       select f
+
     EnterSelect ->
-        let mf = List.head <|
-            List.drop (model.highlighted-1) model.choices
-        in case mf of
+        let mf = Array.get model.highlighted model.choices
+        in
+          case mf of
             Nothing -> model
             Just f -> select f
+
     Next ->
-      if model.highlighted == List.length model.choices
+      if model.highlighted == Array.length model.choices
       then model
-      else {model | highlighted = model.highlighted + 1}
+      else { model | highlighted = model.highlighted + 1}
+
     Prev ->
       if model.highlighted == 1
       then model
       else {model | highlighted = model.highlighted - 1}
 
 
--- View
-{-
-
-<div class="mui-container">
-<div class="mui-panel">
-<h1>My Title</h1>
-<button class="mui-btn mui-btn--primary mui-btn--raised">My Button</button>
-</div>
-</div>
--}
-
-view : Address Action -> Model -> Html
+view : Signal.Address Action -> Model -> Html
 view addr model =
   let
-    options = {preventDefault = True, stopPropagation = False}
-    dec =
-      (Json.customDecoder keyCode (\k ->
-          if List.member k [13, 38, 40]
-          then Ok k
-          else Err "not handling that key"))
+    handleKeyDown code =
+      Signal.message addr <|
+            case code of
+              38 -> Prev
+              40 -> Next
+              13 -> EnterSelect
+              _ -> NoOp
+
     queryInput =
-      input
-        [on "input" targetValue (Signal.message addr << Query)
-        , onWithOptions "keydown" options dec (\k ->
-            Signal.message addr <|
-              case k of
-                  38 -> Prev
-                  40 -> Next
-                  13 -> EnterSelect
-                  _ -> NoOp)
-        , value model.query
-        , autofocus True
-        ] []
+      input [ on "input" targetValue (Signal.message addr << Query)
+            , onCustomKeyDown handleKeyDown
+            , value model.query
+            , autofocus True
+            ]
+            []
   in
   case model.selected of
-    Just f -> div [] [queryInput, text f.name]
+    Just f ->
+      div []
+          [ queryInput
+          , div []
+                [text f]
+          ]
     Nothing ->
       let
-        mapIndexed f xs = List.map2 f [1..List.length xs] xs
         rendered =
-          mapIndexed
-          (\i f ->
-            viewFriend addr (i == model.highlighted)  model.query f)
-          model.choices
+          List.map
+                (\(i, f) ->
+                  viewFriend addr (i == model.highlighted)  model.query f)
+                  <| Array.toIndexedList model.choices
       in
-      div [] [queryInput, ul [] rendered]
+      div []
+          [ queryInput
+          , ul [] rendered
+          ]
 
--- viewFriend : Address Action -> Bool -> Friend -> Html
 viewFriend
-  : Address Action
+  : Signal.Address Action
   -> Bool
   -> String
-  -> Friend
+  -> Candidate
   -> Html
 viewFriend addr hl q f =
     let attrs = [onClick addr (ClickSelect f)]
         hlStyle = style [("background-color", "salmon")]
-        i = getIndex q f.name
+        i = getIndex q f
         qLength = String.length q
-        start = String.left i f.name
-        mid = String.slice i (i + qLength) f.name
-        end = String.dropLeft (i + qLength) f.name
+        start = String.left i f
+        mid = String.slice i (i + qLength) f
+        end = String.dropLeft (i + qLength) f
         person =
           span [] [
             text start
@@ -158,27 +151,31 @@ viewFriend addr hl q f =
           ]
     in
     li (if hl then hlStyle::attrs else attrs)
-    [person, img [src f.photo] []]
+    [person]
 
-matches : String -> Friend -> Bool
+matches : String -> Candidate -> Bool
 matches s f =
-  String.contains (String.toLower s) (String.toLower f.name)
+  String.contains (String.toLower s) (String.toLower f)
 
-mkChoices : String -> List Friend
+mkChoices : String -> Array Candidate
 mkChoices q =
   let
     earliestOccurrence q a b =
-    let
-        ia = getIndex q a.name
-        ib = getIndex q b.name
-    in
-    compare ia ib
+      let
+        ia = getIndex q a
+        ib = getIndex q b
+      in
+        compare ia ib
   in
-  case q of
-      "" -> []
+    case q of
+      "" -> Array.empty
+
       s ->
-        List.filter (matches s) friends
+        candidates
+        |> Array.toList
+        |> List.filter (matches s)
         |> List.sortWith (earliestOccurrence q)
+        |> Array.fromList
 
 
 getIndex : String -> String -> Int
@@ -186,24 +183,22 @@ getIndex q x =
     let
       mi = List.head <| String.indices (String.toLower q) (String.toLower x)
     in
-    mi ? -1 -- Should never get this
+      Maybe.withDefault -1 mi -- Should never get this
 
-(?) : Maybe a -> a -> a
-(?) mv d = Maybe.withDefault d mv
+
+
 
 -- Data
 
-friends : List Friend
-friends =
-  let f a = Friend a ""
-  in [
-  f "Ayman"
-  , f "Jesus"
-  , f "Dave"
-  , f "DJ"
-  , f "Daniel"
-  , f "Dean"
-  ]
+candidates : Array.Array Candidate
+candidates =
+  Array.fromList [ "Ayman"
+                 , "Jesus"
+                 , "Dave"
+                 , "DJ"
+                 , "Daniel"
+                 , "Dean"
+                 ]
 
 
 -- Debug
@@ -221,3 +216,20 @@ withLast update action model =
     let m2 = update action model
     in
     {m2 | lastAction = action}
+
+
+-- Utils
+
+onCustomKeyDown : (Int -> Signal.Message) -> Attribute
+onCustomKeyDown =
+  let
+    options = {preventDefault = True, stopPropagation = False}
+    isOneOf xs code =
+      if List.member code xs
+      then Ok code
+      else Err "not handling that key"
+  in
+  onWithOptions
+    "keydown"
+      options
+        (Json.customDecoder keyCode (isOneOf [13, 38, 40]))
