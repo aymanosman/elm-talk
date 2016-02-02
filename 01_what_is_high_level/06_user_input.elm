@@ -4,6 +4,7 @@ import Html.Events exposing (..)
 import String
 import Json.Decode as Json
 import StartApp.Simple as StartApp
+import Array exposing (Array)
 
 
 main : Signal Html
@@ -18,7 +19,7 @@ main =
 
 type alias Model =
   { query : String
-  , choices : List Candidate
+  , choices : Array Candidate
   , highlighted : Int
   , selected : Maybe Candidate
   , lastAction : Action
@@ -38,7 +39,7 @@ type Action
 init : Model
 init =
   { query = ""
-  , choices = []
+  , choices = Array.fromList []
   , selected = Nothing
   , highlighted = 1
   , lastAction = NoOp
@@ -53,7 +54,7 @@ update action model =
         { model |
           query = f
         , selected = Just f
-        , choices = []
+        , choices = Array.empty
         }
   in
   case action of
@@ -72,15 +73,14 @@ update action model =
       select f
 
     EnterSelect ->
-        let mf = List.head <|
-            List.drop (model.highlighted-1) model.choices
+        let mf = Array.get model.highlighted model.choices
         in
           case mf of
             Nothing -> model
             Just f -> select f
 
     Next ->
-      if model.highlighted == List.length model.choices
+      if model.highlighted == Array.length model.choices
       then model
       else { model | highlighted = model.highlighted + 1}
 
@@ -122,12 +122,11 @@ view addr model =
           ]
     Nothing ->
       let
-        mapIndexed f xs = List.map2 f [1..List.length xs] xs
         rendered =
-          mapIndexed
-          (\i f ->
-            viewFriend addr (i == model.highlighted)  model.query f)
-          model.choices
+          List.map
+                (\(i, f) ->
+                  viewFriend addr (i == model.highlighted)  model.query f)
+                  <| Array.toIndexedList model.choices
       in
       div []
           [ queryInput
@@ -162,7 +161,7 @@ matches : String -> Candidate -> Bool
 matches s f =
   String.contains (String.toLower s) (String.toLower f)
 
-mkChoices : String -> List Candidate
+mkChoices : String -> Array Candidate
 mkChoices q =
   let
     earliestOccurrence q a b =
@@ -173,10 +172,14 @@ mkChoices q =
         compare ia ib
   in
     case q of
-      "" -> []
+      "" -> Array.empty
+
       s ->
-        List.filter (matches s) candidates
+        candidates
+        |> Array.toList
+        |> List.filter (matches s)
         |> List.sortWith (earliestOccurrence q)
+        |> Array.fromList
 
 
 getIndex : String -> String -> Int
@@ -191,15 +194,15 @@ getIndex q x =
 
 -- Data
 
-candidates : List Candidate
+candidates : Array.Array Candidate
 candidates =
-  [ "Ayman"
-  , "Jesus"
-  , "Dave"
-  , "DJ"
-  , "Daniel"
-  , "Dean"
-  ]
+  Array.fromList [ "Ayman"
+                 , "Jesus"
+                 , "Dave"
+                 , "DJ"
+                 , "Daniel"
+                 , "Dean"
+                 ]
 
 
 -- Debug
