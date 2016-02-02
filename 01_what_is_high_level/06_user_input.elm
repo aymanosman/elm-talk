@@ -93,25 +93,21 @@ update action model =
 view : Signal.Address Action -> Model -> Html
 view addr model =
   let
-    options = {preventDefault = True, stopPropagation = False}
-    dec =
-      (Json.customDecoder keyCode (\k ->
-          if List.member k [13, 38, 40]
-          then Ok k
-          else Err "not handling that key"))
+    handleKeyDown code =
+      Signal.message addr <|
+            case code of
+              38 -> Prev
+              40 -> Next
+              13 -> EnterSelect
+              _ -> NoOp
+
     queryInput =
-      input
-        [on "input" targetValue (Signal.message addr << Query)
-        , onWithOptions "keydown" options dec (\k ->
-            Signal.message addr <|
-              case k of
-                  38 -> Prev
-                  40 -> Next
-                  13 -> EnterSelect
-                  _ -> NoOp)
-        , value model.query
-        , autofocus True
-        ] []
+      input [ on "input" targetValue (Signal.message addr << Query)
+            , onCustomKeyDown handleKeyDown
+            , value model.query
+            , autofocus True
+            ]
+            []
   in
   case model.selected of
     Just f ->
@@ -220,3 +216,20 @@ withLast update action model =
     let m2 = update action model
     in
     {m2 | lastAction = action}
+
+
+-- Utils
+
+onCustomKeyDown : (Int -> Signal.Message) -> Attribute
+onCustomKeyDown =
+  let
+    options = {preventDefault = True, stopPropagation = False}
+    isOneOf xs code =
+      if List.member code xs
+      then Ok code
+      else Err "not handling that key"
+  in
+  onWithOptions
+    "keydown"
+      options
+        (Json.customDecoder keyCode (isOneOf [13, 38, 40]))
