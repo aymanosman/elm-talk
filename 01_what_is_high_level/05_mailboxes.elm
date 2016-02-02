@@ -6,6 +6,8 @@ import Html.Events exposing (onClick)
 
   Mailboxes -- creating signals out of user actions
 
+Basically shows how you translate event handlers to the Elm paradigm
+
 -}
 
 main : Signal Html
@@ -27,10 +29,10 @@ view c =
 
 blueOrGreen : Signal String
 blueOrGreen =
-  Signal.foldp (\_ color ->
-                  if color == "red" then "green" else "red")
-          "red"
-            clicky.signal
+  let toggleColour _ col = if col == "red" then "green" else "red"
+  in
+  Signal.foldp toggleColour "red" clicky.signal
 
+-- () is pronounced 'unit'. Take it to mean 'nothing'
 clicky : Signal.Mailbox ()
 clicky = Signal.mailbox ()
