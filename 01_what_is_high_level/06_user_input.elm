@@ -60,7 +60,7 @@ update action model =
   case action of
     NoOp ->
       model
-         
+
     Query t ->
       { model |
         query = t
