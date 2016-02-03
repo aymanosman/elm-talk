@@ -33,6 +33,8 @@ view addr model =
       explicitly hook that text back into the input (the model.text). Why such
       indirection? Answer, unidirectional data flow.
 
+      MVC does not scale https://facebook.github.io/flux/docs/overview.html
+
       Try to comment out the `on "input" ...` attribute.
       -}
       [ input [ value model.text
