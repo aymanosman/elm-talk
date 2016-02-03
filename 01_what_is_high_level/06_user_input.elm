@@ -28,10 +28,10 @@ view addr model =
   div []
       {-
       This will be really familiar to anyone who has used React.js but will
-      probably look odd to anyone else. We are saying, "When the user inputs
+      probably look odd to anyone else. We are saying, When the user inputs
       some text, send a message to the mailbox of `Text "new text"`, then we
       explicitly hook that text back into the input (the model.text). Why such
-      indirection. Answer unidirectional data flow"
+      indirection? Answer, unidirectional data flow.
 
       Try to comment out the `on "input" ...` attribute.
       -}
