@@ -118,28 +118,31 @@ view addr model =
           ]
     Nothing ->
       let
+        fff =
+          Array.toIndexedList model.choices
+          |> List.map (\(idx, e) -> (idx == model.highlighted, e))
         rendered =
           List.map
-                (\(i, f) ->
-                  viewFriend addr (i == model.highlighted)  model.query f)
-                  <| Array.toIndexedList model.choices
+                (\(hl, f) ->
+                  viewItem addr model.query hl f)
+                    fff
       in
       div []
           [ queryInput
           , ul [] rendered
           ]
 
-viewFriend
+viewItem
   : Signal.Address Action
-  -> Bool
   -> String
+  -> Bool -- isHighlighted
   -> Candidate
   -> Html
-viewFriend addr hl q f =
+viewItem addr query hl f =
     let attrs = [onClick addr (ClickSelect f)]
         hlStyle = style [("background-color", "salmon")]
-        i = getIndex q f
-        qLength = String.length q
+        i = getIndex query f
+        qLength = String.length query
         start = String.left i f
         mid = String.slice i (i + qLength) f
         end = String.dropLeft (i + qLength) f
@@ -179,13 +182,12 @@ mkChoices q =
 
 
 getIndex : String -> String -> Int
-getIndex q x =
+getIndex subs s =
     let
-      mi = List.head <| String.indices (String.toLower q) (String.toLower x)
+      mi = String.indices (String.toLower subs) (String.toLower s)
+           |> List.head
     in
-      Maybe.withDefault -1 mi -- Should never get this
-
-
+      Maybe.withDefault -1 mi
 
 
 -- Data
