@@ -10,8 +10,7 @@ main =
 -- Signal.map : (a -> b) -> Signal a -> Signal b
 
 {-
- A 'signal' is a value that changes over time. Notice that
- what we end up with is a value of type `Signal Html`.
+ A 'signal' is a value that changes over time.
 
 ---
 ---

@@ -16,18 +16,21 @@ main =
             }
 
 
-type alias Model = Int
+type alias Model =
+  { count : Int
+  }
+
 
 type Action
   = Increment
 
 init : Model
-init = 1
+init = {count = 1}
 
 view : Signal.Address Action -> Model -> Html
 view addr model =
   div []
-    [ text (toString model)
+    [ text (toString model.count)
     , div []
           [button [onClick addr Increment]
                   [text "increment"]]
@@ -38,7 +41,9 @@ update : Action -> Model -> Model
 update action model =
   case action of
     Increment ->
-      model + 1
+      { model |
+        count = model.count + 1
+      }
 
 {-
 
