@@ -1,0 +1,27 @@
+<!doctype html>
+  <head>
+    <script type="text/javascript" src="elm.js"></script>
+  </head>
+
+  <body>
+  </body>
+
+  <script type="text/javascript">
+    var app = Elm.fullscreen(Elm.App, {portValues: ""});
+
+    app.ports.portValues.send("ooh");
+
+    setTimeout(function() {
+      app.ports.portValues.send("one way");
+    }, 1000);
+
+    setTimeout(function() {
+      app.ports.portValues.send("or another");
+    }, 2500);
+
+    setTimeout(function() {
+      app.ports.portValues.send("I'm gonna find ya");
+    }, 4000);
+
+  </script>
+</html>

@@ -5,6 +5,8 @@ import StartApp.Simple as StartApp
 {-
   In the 'elm architecture', all apps break down into the same
   three components. Model, view and update.
+
+  https://github.com/evancz/elm-architecture-tutorial/
  -}
 
 main : Signal Html
