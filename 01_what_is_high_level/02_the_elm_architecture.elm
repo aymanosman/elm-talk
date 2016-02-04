@@ -7,6 +7,8 @@ import StartApp.Simple as StartApp
   three components. Model, view and update.
 
   https://github.com/evancz/elm-architecture-tutorial/
+
+  http://elm-lang.org/blog/blazing-fast-html
  -}
 
 main : Signal Html

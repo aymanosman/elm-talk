@@ -36,3 +36,16 @@ blueOrGreen =
 -- () is pronounced 'unit'. Take it to mean 'nothing'
 clicky : Signal.Mailbox ()
 clicky = Signal.mailbox ()
+
+
+
+{-
+
+http://package.elm-lang.org/packages/elm-lang/core/3.0.0/Signal#Mailbox
+
+type alias Mailbox =
+  { address : Signal.Address a
+  , signal : Signal.Signal a
+  }
+
+-}
