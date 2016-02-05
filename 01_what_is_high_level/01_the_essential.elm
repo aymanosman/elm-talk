@@ -1,9 +1,9 @@
-import Html exposing (Html, text)
+import Html exposing (Html)
 import Mouse
 
 main : Signal Html
 main =
-  Signal.map (text << toString) Mouse.position
+  Signal.map (Html.text << toString) Mouse.position
 
 -- Mouse.position : Signal (Int, Int)
 -- Html.text : String -> Html
