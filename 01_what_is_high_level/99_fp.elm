@@ -1,9 +1,11 @@
 import Html exposing (..)
 
 main =
-  (text << toString) val
+  (text << toString)
+    valCurry
+    -- valUncurry
 
-val =
+valCurry =
   add3 2
 
 -- Currying
@@ -37,5 +39,5 @@ exists as a function
 
 add' = uncurry add
 
-val' = add' (23, 42)
+valUncurry = add' (23, 42)
 
