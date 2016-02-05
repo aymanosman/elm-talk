@@ -14,6 +14,7 @@ main =
            , toString val5
            , toString val6
            , toString val7
+           , toString val8
            ])
 
 val1 : Maybe Int
@@ -32,6 +33,7 @@ val3 = Person "Bob" 32
 val4 : Maybe Person
 val4 = Just {name = "Alice", age = 23}
 
+-- X is a type, A and B are `data constructors`
 type X
   = A Int
   | B String
@@ -52,3 +54,11 @@ val6 = Bad { name = "Ayman", age = 27 } Megalomania
 
 val7 : Character Person
 val7 = Good (Person "Jamie" 30) Empathy
+
+ -- the type and one of the data constructors can actually
+ -- share the same name. That is because type and values
+ -- live in separate namespaces
+type Ty = Ty | Another
+
+val8 : Ty
+val8 = Ty
