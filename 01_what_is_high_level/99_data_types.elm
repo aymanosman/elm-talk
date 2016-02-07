@@ -56,7 +56,7 @@ val7 : Character Person
 val7 = Good (Person "Jamie" 30) Empathy
 
  -- the type and one of the data constructors can actually
- -- share the same name. That is because type and values
+ -- share the same name. That is because types and values
  -- live in separate namespaces
 type Ty = Ty | Another
 
