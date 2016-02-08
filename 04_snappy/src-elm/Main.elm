@@ -19,5 +19,9 @@ createNewUser login pass =
 
 
 port ff : Task Http.Error String
-port ff = createNewUser "foo" "bar"
+port ff =
+  let resp =
+        Task.map (Debug.log "lol") <| createNewUser "foo" "bar"
+  in
+    Task.onError resp (Task.succeed << Debug.log "err" << toString)
 
