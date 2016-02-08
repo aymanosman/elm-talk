@@ -12,3 +12,5 @@
 /04_snappy/.stack-work
 /04_snappy/log
 *.dump-hi
+/04_snappy/elm-stuff
+/04_snappy/static/elm.js

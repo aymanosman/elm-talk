@@ -1,13 +1,15 @@
+<!doctype html>
 <html>
   <head>
-    <title>Snap web server</title>
-    <link rel="stylesheet" type="text/css" href="/screen.css"/>
+    <title>Elm Talk</title>
+    <script type="text/javascript" src="elm.js"></script>
   </head>
+
   <body>
-    <div id="content">
-
-      <apply-content/>
-
-    </div>
   </body>
+
+  <script type="text/javascript">
+    var app = Elm.fullscreen(Elm.App);
+  </script>
 </html>
+
