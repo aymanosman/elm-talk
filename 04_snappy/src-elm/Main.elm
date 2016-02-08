@@ -18,10 +18,16 @@ createNewUser login pass =
   Http.post Json.string "/new_user" body
 
 
-port ff : Task Http.Error String
+-- port ff : Task Http.Error String
+-- port ff =
+--   let resp =
+--         Task.map (Debug.log "lol") <| createNewUser "foo" "bar"
+--   in
+--     Task.onError resp (Task.succeed << Debug.log "err" << toString)
+
+port ff : Task a String
 port ff =
   let resp =
         Task.map (Debug.log "lol") <| createNewUser "foo" "bar"
   in
-    Task.onError resp (Task.succeed << Debug.log "err" << toString)
-
+    Task.toResult resp |> Task.map (Debug.log "err" << toString)
