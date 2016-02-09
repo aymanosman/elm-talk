@@ -14,71 +14,96 @@ import StartApp
 type alias Model =
   { welcomeText : String
   , foo : String
+  , response : String
   }
 
 type Action
   = Noop
   | MakeLol
   | FailedLol Http.Error
+  | FailedParse String
   | NiceLol Foo
 
 update : Action -> Model -> (Model, Effects Action)
 update act model =
   case act of
     MakeLol ->
-      (model, createNewUser "lol" "wut")
+      (model, createFoo "lol" "wut")
+
     FailedLol httpError ->
-      ({model | foo = toString httpError }, Effects.none)
+      ({model | response = toString httpError }, Effects.none)
+
+    FailedParse msg ->
+      ({model | response = msg}, Effects.none)
+
     NiceLol foo ->
-      ({model | foo = toString foo }, Effects.none)
+      ({model | response = toString foo }, Effects.none)
+
     Noop ->
       (model, Effects.none)
 
 
-createNewUser : String -> String -> Effects Action
-createNewUser login pass =
+createFoo : String -> String -> Effects Action
+createFoo login pass =
   let body =
         multipart [ stringData "login" login
                   , stringData "password" pass
                   ]
+      dec =
+        Json.oneOf [Json.map Ok' fooResponse, Json.map Err' Json.string]
+        -- Json.maybe fooResponse
   in
-  Http.post fooResponse "/new_user" body
+  Http.post dec "/reverse" body
   |> Task.toResult
-  |> Task.map handleUserResponse
+  |> Task.map handleFoo
   |> Effects.task
 
 
-handleUserResponse : Result Http.Error Foo -> Action
-handleUserResponse resp =
+handleFoo : Result Http.Error ServerResponse -> Action
+handleFoo resp =
   case resp of
-    Err msg ->
-      FailedLol msg
+    Err httpError->
+      FailedLol httpError
 
-    Ok foo ->
-      NiceLol foo
+    Ok resp ->
+      case resp of
+        Err' msg ->
+          FailedParse "haha" -- msg
+
+        Ok' foo ->
+          NiceLol foo
 
 
-type alias Foo = { lol : Int }
+type ServerResponse
+  = Ok' Foo
+  | Err' String
+
+type alias Foo = { text : String }
 fooResponse : Json.Decoder Foo
 fooResponse =
-  Json.object1 Foo ("lol" := Json.int)
+  Json.object1 Foo ("text" := Json.string)
 
 
 view : Signal.Address Action -> Model -> Html
 view addr model =
   div []
-      [ button [ onClick addr MakeLol ]
-               [ text "Click Me!" ]
+      [ div [] [ text model.welcomeText ]
+      , button [ onClick addr MakeLol ]
+                 [ text "Click Me!" ]
       , input [ value model.foo ]
               []
-      , text model.welcomeText
+      , div []
+            [ text "Response: "
+            , pre [] [ text model.response ]
+            ]
       ]
 
 init : (Model, Effects Action)
 init =
   let model =
-        { welcomeText = "HHHello Snappy"
+        { welcomeText = "Hello Snappy"
         , foo = ""
+        , response = ""
         }
   in
   (model, Effects.none)

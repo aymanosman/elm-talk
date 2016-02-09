@@ -5,7 +5,9 @@ module Site
 
 ------------------------------------------------------------------------------
 import           Control.Applicative
-import           Data.ByteString (ByteString)
+import           Data.ByteString                             (ByteString)
+import qualified Data.ByteString.Char8                       as BS
+import           Data.Monoid                                 ((<>))
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
@@ -27,10 +29,23 @@ handleNewUser = method POST handleFormSubmit
          writeBS "{\"lol\": 42}"
 
 
+handleReverse :: Handler App App ()
+handleReverse = method POST h
+  where
+    h =
+      do mtxt <- getParam "text"
+         case mtxt of
+           Nothing -> writeBS "param `text` required"
+
+           Just t ->
+              writeBS ("{\"text\": "  <> BS.reverse t <>  "}")
+
+
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = [ ("/new_user", with auth handleNewUser)
+routes = [ -- ("/new_user", with auth handleNewUser)
+           ("/reverse", handleReverse)
          , ("src-elm",   serveDirectory "src-elm")
          , ("",          serveDirectory "static")
          , ("/", render "base")
