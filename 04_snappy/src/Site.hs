@@ -20,10 +20,11 @@ import           Application
 ------------------------------------------------------------------------------
 -- | Handle new user form submit
 handleNewUser :: Handler App (AuthManager App) ()
-handleNewUser = method GET handleForm <|> method POST handleFormSubmit
+handleNewUser = method POST handleFormSubmit
   where
-    handleForm = render "new_user"
-    handleFormSubmit = registerUser "login" "password" >> redirect "/"
+    handleFormSubmit =
+      do registerUser "login" "password"
+         writeBS "{\"lol\": 42}"
 
 
 ------------------------------------------------------------------------------
