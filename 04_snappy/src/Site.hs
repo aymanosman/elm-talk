@@ -23,14 +23,16 @@ import Control.Monad.Trans (liftIO)
 handleReverse :: Handler App App ()
 handleReverse =
   method POST
-  $ do mtxt <- getParam "text"
+  $ do mtxt <- getPostParam "text"
+       lols <- getPostParams
+       liftIO $ print lols
        case mtxt of
          Nothing ->
            do liftIO $ putStrLn "EEE"
               writeBS "{\"err\": \"param `text` required\"}"
 
          Just t ->
-           writeBS ("{\"text\": "  <> BS.reverse t <>  "}")
+           writeBS ("{\"text\": \"" <> BS.reverse t <> "\"}")
 
 
 ------------------------------------------------------------------------------

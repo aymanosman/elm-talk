@@ -20,15 +20,20 @@ type alias Model =
 type Action
   = Noop
   | MakeLol
+  | MakeBork
   | FailedLol Http.Error
   | FailedParse String
   | NiceLol Foo
+  | Text String
 
 update : Action -> Model -> (Model, Effects Action)
 update act model =
   case act of
     MakeLol ->
-      (model, createFoo "lol" "wut")
+      (model, makeReq "text" model.foo)
+
+    MakeBork ->
+      (model, makeReq "lol" "wut")
 
     FailedLol httpError ->
       ({model | response = toString httpError }, Effects.none)
@@ -39,21 +44,27 @@ update act model =
     NiceLol foo ->
       ({model | response = toString foo }, Effects.none)
 
+    Text t ->
+      ({model | foo = t }, Effects.none)
     Noop ->
       (model, Effects.none)
 
 
-createFoo : String -> String -> Effects Action
-createFoo login pass =
-  let body =
-        multipart [ stringData "login" login
-                  , stringData "password" pass
-                  ]
+makeReq : String -> String -> Effects Action
+makeReq key val =
+  let
+      headers = [("Content-Type", "application/x-www-form-urlencoded")]
       dec =
-        Json.oneOf [Json.map Ok' fooResponse, Json.map Err' Json.string]
-        -- Json.maybe fooResponse
+        Json.oneOf [Json.map Ok' fooResponse, Json.map Err' errResponse]
+      req =
+        { verb = "POST"
+        , headers = headers
+        , url = "/reverse"
+        , body = Http.string <| key ++ "=" ++ val
+        }
   in
-  Http.post dec "/reverse" body
+  Http.send Http.defaultSettings req -- dec "/reverse" body
+  |> Http.fromJson dec
   |> Task.toResult
   |> Task.map handleFoo
   |> Effects.task
@@ -67,8 +78,8 @@ handleFoo resp =
 
     Ok resp ->
       case resp of
-        Err' msg ->
-          FailedParse "haha" -- msg
+        Err' errR ->
+          FailedParse errR.err
 
         Ok' foo ->
           NiceLol foo
@@ -76,21 +87,32 @@ handleFoo resp =
 
 type ServerResponse
   = Ok' Foo
-  | Err' String
+  | Err' ErrR
 
 type alias Foo = { text : String }
 fooResponse : Json.Decoder Foo
 fooResponse =
   Json.object1 Foo ("text" := Json.string)
 
+type alias ErrR = { err : String }
+errResponse : Json.Decoder ErrR
+errResponse =
+  Json.object1 ErrR ("err" := Json.string)
+
 
 view : Signal.Address Action -> Model -> Html
 view addr model =
+  let div' btn = div [] [btn]
+  in
   div []
       [ div [] [ text model.welcomeText ]
-      , button [ onClick addr MakeLol ]
-                 [ text "Click Me!" ]
-      , input [ value model.foo ]
+      , div' <| button [ onClick addr MakeBork ]
+                       [ text "Borked!" ]
+      , div' <| button [ onClick addr MakeLol ]
+                       [ text "Click me!" ]
+      , input [ value model.foo
+              , on "input" targetValue (Signal.message addr << Text)
+              ]
               []
       , div []
             [ text "Response: "
