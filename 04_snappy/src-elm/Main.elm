@@ -1,21 +1,41 @@
 module App where
 
 import Html exposing (..)
+import Html.Events exposing (..)
+import Html.Attributes exposing (..)
+
 import Http exposing (multipart, stringData)
 import Json.Decode as Json exposing ((:=))
 import Task exposing (..)
-import Effects exposing (Never)
+import Effects exposing (Never, Effects)
 import StartApp
 
-type alias Model = String
+
+type alias Model =
+  { welcomeText : String
+  , foo : String
+  }
 
 type Action
   = Noop
+  | MakeLol
+  | FailedLol Http.Error
+  | NiceLol Foo
 
+update : Action -> Model -> (Model, Effects Action)
 update act model =
-  (model, Effects.none)
+  case act of
+    MakeLol ->
+      (model, createNewUser "lol" "wut")
+    FailedLol httpError ->
+      ({model | foo = toString httpError }, Effects.none)
+    NiceLol foo ->
+      ({model | foo = toString foo }, Effects.none)
+    Noop ->
+      (model, Effects.none)
 
-createNewUser : String -> String -> Task Http.Error Foo
+
+createNewUser : String -> String -> Effects Action
 createNewUser login pass =
   let body =
         multipart [ stringData "login" login
@@ -23,6 +43,19 @@ createNewUser login pass =
                   ]
   in
   Http.post fooResponse "/new_user" body
+  |> Task.toResult
+  |> Task.map handleUserResponse
+  |> Effects.task
+
+
+handleUserResponse : Result Http.Error Foo -> Action
+handleUserResponse resp =
+  case resp of
+    Err msg ->
+      FailedLol msg
+
+    Ok foo ->
+      NiceLol foo
 
 
 type alias Foo = { lol : Int }
@@ -30,27 +63,30 @@ fooResponse : Json.Decoder Foo
 fooResponse =
   Json.object1 Foo ("lol" := Json.int)
 
--- port ff : Task Http.Error String
--- port ff =
---   let resp =
---         Task.map (Debug.log "lol") <| createNewUser "foo" "bar"
---   in
---     Task.onError resp (Task.succeed << Debug.log "err" << toString)
-
-port ff : Task a String
-port ff =
-  let resp =
-        createNewUser "foo" "bar"
-  in
-    Task.toResult resp |> Task.map (Debug.log "PPP" << toString)
 
 view : Signal.Address Action -> Model -> Html
 view addr model =
-  text model
+  div []
+      [ button [ onClick addr MakeLol ]
+               [ text "Click Me!" ]
+      , input [ value model.foo ]
+              []
+      , text model.welcomeText
+      ]
+
+init : (Model, Effects Action)
+init =
+  let model =
+        { welcomeText = "HHHello Snappy"
+        , foo = ""
+        }
+  in
+  (model, Effects.none)
+
 
 
 app =
-  StartApp.start { init = ("HHHello Snappy", Effects.none)
+  StartApp.start { init = init
                  , view = view
                  , update = update
                  , inputs = []
