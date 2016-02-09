@@ -4,9 +4,16 @@ import Html exposing (..)
 import Http exposing (multipart, stringData)
 import Json.Decode as Json exposing ((:=))
 import Task exposing (..)
+import Effects exposing (Never)
+import StartApp
 
-main : Html
-main = text "Hello Snappy"
+type alias Model = String
+
+type Action
+  = Noop
+
+update act model =
+  (model, Effects.none)
 
 createNewUser : String -> String -> Task Http.Error Foo
 createNewUser login pass =
@@ -36,3 +43,23 @@ port ff =
         createNewUser "foo" "bar"
   in
     Task.toResult resp |> Task.map (Debug.log "PPP" << toString)
+
+view : Signal.Address Action -> Model -> Html
+view addr model =
+  text model
+
+
+app =
+  StartApp.start { init = ("HHHello Snappy", Effects.none)
+                 , view = view
+                 , update = update
+                 , inputs = []
+                 }
+
+main : Signal Html
+main =
+  app.html
+
+port tasks : Signal (Task Never ())
+port tasks =
+  app.tasks

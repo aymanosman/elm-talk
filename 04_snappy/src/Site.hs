@@ -31,6 +31,7 @@ handleNewUser = method POST handleFormSubmit
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/new_user", with auth handleNewUser)
+         , ("src-elm",   serveDirectory "src-elm")
          , ("",          serveDirectory "static")
          , ("/", render "base")
          ]

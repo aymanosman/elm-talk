@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Elm Talk</title>
-    <script type="text/javascript" src="elm.js"></script>
+    <script type="text/javascript" src="/src-elm/elm.js"></script>
   </head>
 
   <body>
