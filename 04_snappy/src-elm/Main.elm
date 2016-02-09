@@ -110,6 +110,7 @@ init =
 
 
 
+app : StartApp.App Model
 app =
   StartApp.start { init = init
                  , view = view
