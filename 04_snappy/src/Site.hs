@@ -4,7 +4,6 @@ module Site
   ) where
 
 ------------------------------------------------------------------------------
-import           Control.Applicative
 import           Data.ByteString                             (ByteString)
 import qualified Data.ByteString.Char8                       as BS
 import           Data.Monoid                                 ((<>))
@@ -20,25 +19,15 @@ import           Application
 
 
 ------------------------------------------------------------------------------
--- | Handle new user form submit
-handleNewUser :: Handler App (AuthManager App) ()
-handleNewUser = method POST handleFormSubmit
-  where
-    handleFormSubmit =
-      do registerUser "login" "password"
-         writeBS "{\"lol\": 42}"
-
-
 handleReverse :: Handler App App ()
-handleReverse = method POST h
-  where
-    h =
-      do mtxt <- getParam "text"
-         case mtxt of
-           Nothing -> writeBS "param `text` required"
+handleReverse =
+  method POST
+  $ do mtxt <- getParam "text"
+       case mtxt of
+         Nothing -> writeBS "{\"err\": \"param `text` required}\""
 
-           Just t ->
-              writeBS ("{\"text\": "  <> BS.reverse t <>  "}")
+         Just t ->
+           writeBS ("{\"text\": "  <> BS.reverse t <>  "}")
 
 
 ------------------------------------------------------------------------------
