@@ -16,6 +16,7 @@ import           Snap.Snaplet.Session.Backends.CookieSession
 import           Snap.Util.FileServe
 ------------------------------------------------------------------------------
 import           Application
+import Control.Monad.Trans (liftIO)
 
 
 ------------------------------------------------------------------------------
@@ -24,7 +25,9 @@ handleReverse =
   method POST
   $ do mtxt <- getParam "text"
        case mtxt of
-         Nothing -> writeBS "{\"err\": \"param `text` required}\""
+         Nothing ->
+           do liftIO $ putStrLn "EEE"
+              writeBS "{\"err\": \"param `text` required\"}"
 
          Just t ->
            writeBS ("{\"text\": "  <> BS.reverse t <>  "}")
