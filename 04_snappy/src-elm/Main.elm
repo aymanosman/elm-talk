@@ -124,9 +124,9 @@ view addr model =
       , div' <| button [ onClick addr MakeBork ]
                        [ text "Borked!" ]
       , div' <| button [ onClick addr MakeLol ]
-                       [ text "Click me!" ]
+                       [ text "Make form-urlencoded request!" ]
       , div' <| button [ onClick addr MakeJson ]
-          [ text "Make json request!" ]
+                       [ text "Make json request!" ]
       , input [ value model.foo
               , on "input" targetValue (Signal.message addr << Text)
               ]
