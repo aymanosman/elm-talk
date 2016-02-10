@@ -58,9 +58,9 @@ writeJson val =
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = [ ("/reverse", handleReverse)
-         , ("/reverse-json'", handleReverseJson)
-         , ("src-elm", serveDirectory "src-elm")
+routes = [ ("src-elm", serveDirectory "src-elm")
+         , ("/reverse", handleReverse)
+         , ("/reverse-json", handleReverseJson)
          , ("", serveDirectory "static")
          , ("/test", render "base")
          ]
