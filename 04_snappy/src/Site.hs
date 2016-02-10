@@ -51,7 +51,7 @@ handleReverseJson =
 
 writeJson :: (MonadSnap m, ToJSON a) => a -> m ()
 writeJson val =
-  do modifyResponse $ setHeader "Content-Type" "application/json'"
+  do modifyResponse $ setHeader "Content-Type" "application/json"
      writeLBS $ encode val
 
 
