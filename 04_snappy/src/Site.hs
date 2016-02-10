@@ -7,10 +7,9 @@ module Site
 import           Data.ByteString                             (ByteString)
 import qualified Data.ByteString.Char8                       as BS
 import           Data.Monoid                                 ((<>))
+import           Data.Aeson
 import           Snap.Core
 import           Snap.Snaplet
-import           Snap.Snaplet.Auth
-import           Snap.Snaplet.Auth.Backends.JsonFile
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.Session.Backends.CookieSession
 import           Snap.Util.FileServe
@@ -34,14 +33,32 @@ handleReverse =
          Just t ->
            writeBS ("{\"text\": \"" <> BS.reverse t <> "\"}")
 
+data Rev = Rev { _revText :: String }
+
+instance ToJSON Rev where
+  toJSON (Rev text) = object ["text" .= text]
+
+
+handleReverseJson :: Handler App App ()
+handleReverseJson =
+  method POST
+  $ do lol <- getPostParam "todo get json" -- getJSON
+       writeJson $ toJSON (Rev "yay")
+
+
+writeJson :: (MonadSnap m, ToJSON a) => a -> m ()
+writeJson val =
+  do modifyResponse $ setHeader "Content-Type" "application/json'"
+     writeLBS $ encode val
+
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = [ -- ("/new_user", with auth handleNewUser)
-           ("/reverse", handleReverse)
-         , ("src-elm",   serveDirectory "src-elm")
-         , ("",          serveDirectory "static")
+routes = [ ("/reverse", handleReverse)
+         , ("/reverse-json'", handleReverseJson)
+         , ("src-elm", serveDirectory "src-elm")
+         , ("", serveDirectory "static")
          , ("/", render "base")
          ]
 
@@ -53,13 +70,6 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     h <- nestSnaplet "" heist $ heistInit "templates"
     s <- nestSnaplet "sess" sess $
            initCookieSessionManager "site_key.txt" "sess" (Just 3600)
-
-    -- NOTE: We're using initJsonFileAuthManager here because it's easy and
-    -- doesn't require any kind of database server to run.  In practice,
-    -- you'll probably want to change this to a more robust auth backend.
-    a <- nestSnaplet "auth" auth $
-           initJsonFileAuthManager defAuthSettings sess "users.json"
     addRoutes routes
-    addAuthSplices h auth
-    return $ App h s a
+    return $ App h s
 

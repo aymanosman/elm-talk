@@ -32,6 +32,8 @@ Executable snappy
                , snap-core              
                , snap-server           
                , snap-loader-static   
+               -- , snap-extras
+               , aeson
                , text                
                , time               
                , xmlhtml           
