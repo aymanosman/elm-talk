@@ -21,6 +21,7 @@ type Action
   = Noop
   | MakeLol
   | MakeBork
+  | MakeJson
   | FailedLol Http.Error
   | FailedParse String
   | NiceLol Foo
@@ -30,10 +31,13 @@ update : Action -> Model -> (Model, Effects Action)
 update act model =
   case act of
     MakeLol ->
-      (model, makeReq "text" model.foo)
+      (model, makeReq "/reverse" "text" model.foo)
 
     MakeBork ->
-      (model, makeReq "lol" "wut")
+      (model, makeReq "/reverse" "lol" "wut")
+
+    MakeJson ->
+      (model, makeReq "/reverse-json" "haha" "smiley")
 
     FailedLol httpError ->
       ({model | response = toString httpError }, Effects.none)
@@ -50,8 +54,8 @@ update act model =
       (model, Effects.none)
 
 
-makeReq : String -> String -> Effects Action
-makeReq key val =
+makeReq : String -> String -> String -> Effects Action
+makeReq url key val =
   let
       headers = [("Content-Type", "application/x-www-form-urlencoded")]
       dec =
@@ -59,7 +63,7 @@ makeReq key val =
       req =
         { verb = "POST"
         , headers = headers
-        , url = "/reverse"
+        , url = url
         , body = Http.string <| key ++ "=" ++ val
         }
   in
@@ -110,6 +114,8 @@ view addr model =
                        [ text "Borked!" ]
       , div' <| button [ onClick addr MakeLol ]
                        [ text "Click me!" ]
+      , div' <| button [ onClick addr MakeJson ]
+          [ text "Make json request!" ]
       , input [ value model.foo
               , on "input" targetValue (Signal.message addr << Text)
               ]

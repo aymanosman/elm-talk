@@ -43,6 +43,9 @@ handleReverseJson :: Handler App App ()
 handleReverseJson =
   method POST
   $ do lol <- getPostParam "todo get json" -- getJSON
+       hs <- getsRequest listHeaders
+       liftIO $ print hs
+       liftIO $ print 42
        writeJson $ toJSON (Rev "yay")
 
 
@@ -59,7 +62,7 @@ routes = [ ("/reverse", handleReverse)
          , ("/reverse-json'", handleReverseJson)
          , ("src-elm", serveDirectory "src-elm")
          , ("", serveDirectory "static")
-         , ("/", render "base")
+         , ("/test", render "base")
          ]
 
 
