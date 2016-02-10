@@ -31,13 +31,13 @@ update : Action -> Model -> (Model, Effects Action)
 update act model =
   case act of
     MakeLol ->
-      (model, makeReq "/reverse" "text" model.foo)
+      (model, postForm "/reverse" "text" model.foo)
 
     MakeBork ->
-      (model, makeReq "/reverse" "lol" "wut")
+      (model, postForm "/reverse" "lol" "wut")
 
     MakeJson ->
-      (model, makeReq "/reverse-json" "haha" "smiley")
+      (model, postJson "/reverse-json" "{\"haha\": \"smiley\"}")
 
     FailedLol httpError ->
       ({model | response = toString httpError }, Effects.none)
@@ -54,25 +54,36 @@ update act model =
       (model, Effects.none)
 
 
-makeReq : String -> String -> String -> Effects Action
-makeReq url key val =
+postForm : String -> String -> String -> Effects Action
+postForm url key val =
   let
       headers = [("Content-Type", "application/x-www-form-urlencoded")]
-      dec =
-        Json.oneOf [Json.map Ok' fooResponse, Json.map Err' errResponse]
-      req =
-        { verb = "POST"
-        , headers = headers
-        , url = url
-        , body = Http.string <| key ++ "=" ++ val
-        }
   in
-  Http.send Http.defaultSettings req -- dec "/reverse" body
-  |> Http.fromJson dec
-  |> Task.toResult
-  |> Task.map handleFoo
-  |> Effects.task
+    post' url headers <| Http.string (key ++ "=" ++ val)
 
+post' url headers body =
+  let
+    dec =
+      Json.oneOf [Json.map Ok' fooResponse, Json.map Err' errResponse]
+    req =
+      { verb = "POST"
+      , headers = headers
+      , url = url
+      , body = body
+      }
+  in
+    Http.send Http.defaultSettings req -- dec "/reverse" body
+      |> Http.fromJson dec
+      |> Task.toResult
+      |> Task.map handleFoo
+      |> Effects.task
+
+
+postJson : String -> String -> Effects Action
+postJson url body =
+  let headers = [("Content-Type", "application/json")]
+  in
+    post' url headers <| Http.string body
 
 handleFoo : Result Http.Error ServerResponse -> Action
 handleFoo resp =
