@@ -68,7 +68,7 @@ post' url headers body =
     req =
       { verb = "POST"
       , headers = headers
-      , url = url
+      , url = "http://localhost:8000" ++ url
       , body = body
       }
   in
@@ -146,7 +146,6 @@ init =
         }
   in
   (model, Effects.none)
-
 
 
 app : StartApp.App Model
