@@ -36,10 +36,16 @@ handleReverse =
          Just t ->
            writeBS ("{\"text\": \"" <> BS.reverse t <> "\"}")
 
-data Rev = Rev { _revText :: String }
+data Payload = Payload { payloadText :: String }
 
-instance ToJSON Rev where
-  toJSON (Rev text) = object ["text" .= text]
+instance ToJSON Payload where
+  toJSON (Payload text) = object ["text" .= text]
+
+instance FromJSON Payload where
+  parseJSON (Object v) =
+    Payload <$>
+    v .: "text"
+  parseJSON _ = empty
 
 
 handleReverseJson :: Handler App App ()
@@ -47,14 +53,14 @@ handleReverseJson =
   method POST
   $ do _lol <- getPostParam "todo get json" -- getJSON
        hs <- getsRequest listHeaders
-       liftIO $ print hs
-       writeJson $ toJSON (Rev "yay")
+       asd <- decode <$> readRequestBody 5000
+       liftIO $ print (payloadText <$> asd)
+       writeJson $ toJSON (Payload "yay")
 
 
 writeJson :: (MonadSnap m, ToJSON a) => a -> m ()
 writeJson val =
   do modifyResponse $ setHeader "Content-Type" "application/json"
-     modifyResponse $ setHeader "Access-Control-Allow-Origin" "*"
      writeLBS $ encode val
 
 
@@ -65,7 +71,6 @@ routes = [ ("src-elm", serveDirectory "src-elm")
          , ("/reverse", handleReverse)
          , ("/reverse-json", handleReverseJson)
          , ("", serveDirectory "static")
-         , ("/", sendFile "static/index.html")
          ]
 
 
