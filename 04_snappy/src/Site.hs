@@ -9,9 +9,8 @@ import qualified Data.ByteString.Char8 as BS
 import           Data.Monoid ((<>))
 import           Data.Aeson
 import           Snap.Core
-import qualified Snap.CORS as CORS
+-- import qualified Snap.CORS as CORS
 import           Snap.Snaplet
-import           Snap.Snaplet.Heist
 import           Snap.Snaplet.Session.Backends.CookieSession
 import           Snap.Util.FileServe
 ------------------------------------------------------------------------------
@@ -46,10 +45,9 @@ instance ToJSON Rev where
 handleReverseJson :: Handler App App ()
 handleReverseJson =
   method POST
-  $ do lol <- getPostParam "todo get json" -- getJSON
+  $ do _lol <- getPostParam "todo get json" -- getJSON
        hs <- getsRequest listHeaders
        liftIO $ print hs
-       liftIO $ print 42
        writeJson $ toJSON (Rev "yay")
 
 
@@ -67,7 +65,7 @@ routes = [ ("src-elm", serveDirectory "src-elm")
          , ("/reverse", handleReverse)
          , ("/reverse-json", handleReverseJson)
          , ("", serveDirectory "static")
-         , ("/test", render "base")
+         , ("/", sendFile "static/index.html")
          ]
 
 
@@ -78,9 +76,8 @@ app = makeSnaplet "app" "An snaplet example application." Nothing initApp
 
 initApp :: Initializer App App App
 initApp =
-  do h <- nestSnaplet "" heist $ heistInit "templates"
-     s <- nestSnaplet "sess" sess $
+  do s <- nestSnaplet "sess" sess $
        initCookieSessionManager "site_key.txt" "sess" (Just 3600)
      addRoutes routes
-     return $ App h s
+     return $ App s
 
