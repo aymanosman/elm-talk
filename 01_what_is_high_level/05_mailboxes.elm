@@ -12,11 +12,13 @@ Basically shows how you translate event handlers to the Elm paradigm
 
 main : Signal Html
 main =
-  Signal.map view blueOrGreen
+  Signal.map2 view fsize blueOrGreen
 
-view : String -> Html
-view c =
-  let foo = [("color", c)]
+view : Int -> String -> Html
+view fsize colour =
+  let foo = [ ("color", colour)
+            , ("font-size", toString fsize ++ "px")
+            ]
   in
     div []
         [ div [ style foo
@@ -27,15 +29,19 @@ view c =
               [ text "lolwut" ]
         ]
 
+-- () is pronounced 'unit'. Take it to mean 'nothing'
+clicky : Signal.Mailbox ()
+clicky = Signal.mailbox ()
+
 blueOrGreen : Signal String
 blueOrGreen =
   let toggleColour _ col = if col == "red" then "green" else "red"
   in
   Signal.foldp toggleColour "red" clicky.signal
 
--- () is pronounced 'unit'. Take it to mean 'nothing'
-clicky : Signal.Mailbox ()
-clicky = Signal.mailbox ()
+fsize : Signal Int
+fsize =
+  Signal.foldp (\_ acc -> acc + 10) 20 clicky.signal
 
 
 
