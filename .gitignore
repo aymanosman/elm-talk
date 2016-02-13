@@ -18,9 +18,8 @@
 *.dump-hi
 /04_snappy/static/elm.js
 /04_snappy/static/index.html
-/04_snappy/src-elm/elm.js
-/04_snappy/src-elm/elm-stuff
 /04_snappy/node_modules
 /04_snappy/static/Main.js
+/04_snappy/elm-stuff
 
 /05_mascot/.stack-work
