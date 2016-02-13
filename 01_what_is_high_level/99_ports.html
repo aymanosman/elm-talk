@@ -7,21 +7,34 @@
   </body>
 
   <script type="text/javascript">
-    var app = Elm.fullscreen(Elm.App, {portValues: ""});
+   var app = Elm.fullscreen(Elm.App, {portValues: ""});
 
-    app.ports.portValues.send("ooh");
+   oneWay();
+   /* orAnother(); */
+
+
+   function oneWay() {
+    app.ports.portValues.send("one");
 
     setTimeout(function() {
-      app.ports.portValues.send("one way");
+      app.ports.portValues.send("two");
     }, 1000);
 
     setTimeout(function() {
-      app.ports.portValues.send("or another");
+      app.ports.portValues.send("three");
     }, 2500);
 
     setTimeout(function() {
-      app.ports.portValues.send("I'm gonna find ya");
+      app.ports.portValues.send("four");
     }, 4000);
+   }
 
+   function orAnother() {
+     var n = 0;
+     var i = setInterval(function(){
+       app.ports.portValues.send(""+n);
+       n++;
+     }, 1000);
+   }
   </script>
 </html>
