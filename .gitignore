@@ -1,4 +1,6 @@
 .tern-port
+elm-stuff
+/elm.js
 
 /slides/beam.vrb
 /slides/generic.pdf
@@ -10,12 +12,13 @@
 /02_exercises/elm-stuff
 /other-stuff/elm-stuff
 /other-stuff/elm.js
-/03_asd/elm-stuff
-/03_asd/elm.js
 
+/03_buggy/elm.js
+/03_buggy/elm-stuff
+
+*.dump-hi
 /04_snappy/.stack-work
 /04_snappy/log
-*.dump-hi
 /04_snappy/static/elm.js
 /04_snappy/static/index.html
 /04_snappy/node_modules
