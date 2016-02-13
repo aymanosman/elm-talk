@@ -16,6 +16,7 @@ import           Snap.Util.FileServe
 ------------------------------------------------------------------------------
 import           Application
 import Control.Monad.Trans (liftIO)
+import Control.Applicative (empty)
 
 
 ------------------------------------------------------------------------------
@@ -43,8 +44,7 @@ instance ToJSON Payload where
 
 instance FromJSON Payload where
   parseJSON (Object v) =
-    Payload <$>
-    v .: "text"
+    Payload <$> v .: "text"
   parseJSON _ = empty
 
 
@@ -52,10 +52,15 @@ handleReverseJson :: Handler App App ()
 handleReverseJson =
   method POST
   $ do _lol <- getPostParam "todo get json" -- getJSON
-       hs <- getsRequest listHeaders
-       asd <- decode <$> readRequestBody 5000
-       liftIO $ print (payloadText <$> asd)
-       writeJson $ toJSON (Payload "yay")
+       mpayload <- decode <$> readRequestBody 5000
+       case mpayload of
+            Nothing ->
+              writeJson $ object ["err" .= ("bork" :: String)]
+
+            Just (Payload t) ->
+              writeJson $ toJSON (Payload (reverse t))
+
+
 
 
 writeJson :: (MonadSnap m, ToJSON a) => a -> m ()
