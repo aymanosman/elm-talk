@@ -50,6 +50,7 @@ update act model =
 
     Text t ->
       ({model | foo = t }, Effects.none)
+
     Noop ->
       (model, Effects.none)
 

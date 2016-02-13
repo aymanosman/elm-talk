@@ -33,6 +33,8 @@ Executable snappy
                , snap-server           
                , snap-loader-static   
                -- , snap-extras
+               , snap-cors
+               , wai-cors
                , aeson
                , text                
                , time               

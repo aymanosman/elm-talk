@@ -31,7 +31,7 @@ gulp.task("serve:dev", ["build"], function() {
 
 gulp.task('elm-init', elm.init);
 gulp.task('elm', ['elm-init'], function() {
-  return gulp.src('src-elm/elm/Main.elm')
+  return gulp.src('src-elm/Main.elm')
     .pipe(plumber())
     .pipe(elm())
     .on('error', function(err) {
