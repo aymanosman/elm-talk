@@ -12,10 +12,13 @@ main =
 {-
  A 'signal' is a value that changes over time.
 
----
----
 
+ Conceptually a signal has the following type:
  type Signal α = Time → α
 
- 'GUI' = Signal Html or 'Html over time'
+ The radical idea is to model our user interface as a
+ *value* that changes over time!
+
+ UI = Signal Html or 'Html over time'
+
  -}
