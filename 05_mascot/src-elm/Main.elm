@@ -37,7 +37,8 @@ update act model =
       (model, postForm "/reverse" "lol" "wut")
 
     MakeJson ->
-      (model, postJson "/reverse-json" "{\"payloadText\": \"smiley\"}")
+      (model, postJson "/reverse-json" <|
+         "{\"payloadText\": \"" ++ model.foo ++ "\"}")
 
     FailedLol httpError ->
       ({model | response = toString httpError }, Effects.none)
