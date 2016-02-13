@@ -5,7 +5,7 @@ module Main where
 import Web.Scotty
 import Network.Wai.Middleware.RequestLogger
 import Network.Wai.Middleware.Static
-import Data.Aeson (ToJSON, FromJSON, toJSON, decode, object)
+import Data.Aeson (ToJSON, FromJSON, toJSON, object)
 import GHC.Generics
 
 (.=) = (,)
@@ -24,10 +24,12 @@ site =
      post "/reverse"
        $ do t <- param "text"
             json $ toJSON $ Payload $ reverse t
-            -- json $ object ["payloadTexts" .= reverse t]
+            `rescue`
+            (\msg ->
+              json $ object ["err" .= toJSON msg])
 
      post "/reverse-json"
-       $ do mpayload <- decode <$> body
+       $ do mpayload <- jsonData -- decode <$> body
             case mpayload of
               Nothing ->
                 json $ object ["err" .= "could not decode payload"]
