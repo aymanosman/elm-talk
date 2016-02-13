@@ -13,20 +13,14 @@ build-type:          Simple
 -- extra-source-files:
 cabal-version:       >=1.10
 
-library
-  hs-source-dirs:      src
-  exposed-modules:     Lib
-  build-depends:       base >= 4.7 && < 5
-                     , scotty
-                     , wai-cors
-  default-language:    Haskell2010
-
 executable mascot
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
-                     , mascot
+                     , scotty
+                     , wai-extra
+                     , wai-middleware-static
   default-language:    Haskell2010
 
 test-suite mascot-test
