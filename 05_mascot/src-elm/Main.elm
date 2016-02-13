@@ -19,7 +19,7 @@ type alias Model =
 
 type Action
   = Noop
-  | MakeLol
+  | MakeForm
   | MakeBork
   | MakeJson
   | FailedLol Http.Error
@@ -27,10 +27,20 @@ type Action
   | NiceLol Foo
   | Text String
 
+init : (Model, Effects Action)
+init =
+  let model =
+        { welcomeText = "Mascot"
+        , foo = ""
+        , response = ""
+        }
+  in
+    (model, Effects.none)
+
 update : Action -> Model -> (Model, Effects Action)
 update act model =
   case act of
-    MakeLol ->
+    MakeForm ->
       (model, postForm "/reverse" "text" model.foo)
 
     MakeBork ->
@@ -125,7 +135,7 @@ view addr model =
       [ div [] [ text model.welcomeText ]
       , div' <| button [ onClick addr MakeBork ]
                        [ text "Borked!" ]
-      , div' <| button [ onClick addr MakeLol ]
+      , div' <| button [ onClick addr MakeForm ]
                        [ text "Make form-urlencoded request!" ]
       , div' <| button [ onClick addr MakeJson ]
                        [ text "Make json request!" ]
@@ -139,16 +149,8 @@ view addr model =
             ]
       ]
 
-init : (Model, Effects Action)
-init =
-  let model =
-        { welcomeText = "Hello Snappy"
-        , foo = ""
-        , response = ""
-        }
-  in
-  (model, Effects.none)
 
+-- Boilerplate
 
 app : StartApp.App Model
 app =
