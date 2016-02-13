@@ -37,7 +37,7 @@ update act model =
       (model, postForm "/reverse" "lol" "wut")
 
     MakeJson ->
-      (model, postJson "/reverse-json" "{\"haha\": \"smiley\"}")
+      (model, postJson "/reverse-json" "{\"payloadText\": \"smiley\"}")
 
     FailedLol httpError ->
       ({model | response = toString httpError }, Effects.none)
@@ -105,10 +105,10 @@ type ServerResponse
   = Ok' Foo
   | Err' ErrR
 
-type alias Foo = { text : String }
+type alias Foo = { payloadText : String }
 fooResponse : Json.Decoder Foo
 fooResponse =
-  Json.object1 Foo ("text" := Json.string)
+  Json.object1 Foo ("payloadText" := Json.string)
 
 type alias ErrR = { err : String }
 errResponse : Json.Decoder ErrR

@@ -1,10 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
 module Main where
 
 import Web.Scotty
 import Network.Wai.Middleware.RequestLogger
 import Network.Wai.Middleware.Static
--- import Data.Aeson
+import Data.Aeson (ToJSON, FromJSON, toJSON, decode, object)
+import GHC.Generics
+
+(.=) = (,)
 
 main :: IO ()
 main =
@@ -14,8 +18,24 @@ site :: ScottyM ()
 site =
   do middleware logStdoutDev
      middleware $ staticPolicy (addBase "static")
+
      get "/" $ file "static/index.html"
+
+     post "/reverse"
+       $ do t <- param "text"
+            json $ toJSON $ Payload $ reverse t
+            -- json $ object ["payloadTexts" .= reverse t]
+
      post "/reverse-json"
-       $ do p <- param "foo"
-            -- json $ object
-            text p
+       $ do mpayload <- decode <$> body
+            case mpayload of
+              Nothing ->
+                json $ object ["err" .= "could not decode payload"]
+              Just p ->
+                json $ toJSON $ Payload $ reverse (payloadText p)
+
+
+data Payload = Payload
+  { payloadText :: String
+  } deriving (Show, Generic, ToJSON, FromJSON)
+
