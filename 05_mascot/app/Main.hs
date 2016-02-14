@@ -23,7 +23,7 @@ site =
 
      post "/reverse"
        $ do t <- param "text"
-            json $ toJSON $ Payload $ reverse t
+            json . toJSON . Payload $ reverse t
             `rescue`
             (\msg ->
               json $ object ["err" .= toJSON msg])
@@ -34,7 +34,7 @@ site =
               Nothing ->
                 json $ object ["err" .= "could not decode payload"]
               Just p ->
-                json $ toJSON $ Payload $ reverse (payloadText p)
+                json . toJSON . Payload . reverse $ payloadText p
 
 
 data Payload = Payload
