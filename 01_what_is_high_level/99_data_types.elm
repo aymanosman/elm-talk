@@ -18,6 +18,7 @@ main =
            , v "8: " val8
            ])
 
+-- type Maybe a = Nothing | Just a
 val1 : Maybe Int
 val1 = Just 2
 
@@ -26,13 +27,13 @@ type alias Person =
   , age : Int
   }
 
-val2 : Maybe Person
-val2 = Nothing
+val2 : Person
+val2 = Person "Bob" 32 -- same as {name="Bob", age=32}
 
-val3 : Person
-val3 = Person "Bob" 32
-val4 : Maybe Person
-val4 = Just {name = "Alice", age = 23}
+val3 : Maybe Person
+val3 = Nothing
+val4 : Maybe Person -- same as Maybe {name : String, age : Int}
+val4 = Just {name = "Alice", age = 23} -- same as Just (Person "Alice" 23)
 
 -- X is a type, A and B are `data constructors`
 type X
@@ -51,10 +52,10 @@ type Reason
   | Empathy
 
 val6 : Character Person
-val6 = Bad { name = "Ayman", age = 27 } Megalomania
+val6 = Bad { name = "Mallory", age = 27 } Megalomania
 
 val7 : Character Person
-val7 = Good (Person "Jamie" 30) Empathy
+val7 = Good (Person "Angela" 30) Empathy
 
  -- the type and one of the data constructors can actually
  -- share the same name. That is because types and values
