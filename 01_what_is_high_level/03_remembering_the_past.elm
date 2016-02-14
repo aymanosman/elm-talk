@@ -25,7 +25,8 @@ numClicks : Signal Int
 
 Mouse.clicks : Signal ()
 foldp : (a -> s -> s) -> s -> Signal a -> Signal s
-Specializing foldp to the types we know we want and have
+Specializing foldp to the types we know we want and have we
+get:
 foldp' : (() -> Int -> Int) -> Int -> Signal () -> Signal Int
 
 
