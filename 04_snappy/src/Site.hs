@@ -29,11 +29,10 @@ handleReverse =
   method POST
   $ do mtxt <- getPostParam "text"
        lols <- getPostParams
-       liftIO $ print lols
+       liftIO $ printf "POST params: %s\n" (show lols)
        case mtxt of
          Nothing ->
-           do liftIO $ putStrLn "EEE"
-              writeBS "{\"err\": \"param `text` required\"}"
+           writeBS "{\"err\": \"param `text` required\"}"
 
          Just t ->
            writeBS ("{\"text\": \"" <> BS.reverse t <> "\"}")
