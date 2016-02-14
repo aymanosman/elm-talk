@@ -17,12 +17,12 @@ main =
 site :: ScottyM ()
 site =
   do middleware logStdoutDev
-     middleware $ staticPolicy (addBase "static")
+     middleware $ staticPolicy $ addBase "static"
 
      get "/" $ file "static/index.html"
 
      post "/reverse"
-       $ do t <- param "text"
+       $ do t <- param "text" -- 'raises' if param not found, caught by 'rescue'
             json . toJSON . Payload $ reverse t
             `rescue`
             (\msg ->
@@ -33,8 +33,8 @@ site =
             case mpayload of
               Nothing ->
                 json $ object ["err" .= "could not decode payload"]
-              Just p ->
-                json . toJSON . Payload . reverse $ payloadText p
+              Just (Payload t) ->
+                json . toJSON . Payload $ reverse t
 
 
 data Payload = Payload
