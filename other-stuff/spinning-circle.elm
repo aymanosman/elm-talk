@@ -12,8 +12,8 @@ view (x, y) (mx, my) =
   collage 400 400
   [ circleAt x y
     -- uncomment below
-    |> move (-200, 200)
-    |> move (toFloat mx, toFloat -my)
+    |> move (-200, 200) -- center
+    |> move (toFloat mx, toFloat -my) -- follow mouse
   ]
 
 angle : Signal Float
