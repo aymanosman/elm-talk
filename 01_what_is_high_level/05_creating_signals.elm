@@ -28,31 +28,41 @@ main : Signal Html
 main =
   Signal.map2 view fsize blueOrGreen
 
-view : Int -> String -> Html
-view fsize colour =
-  let foo = [ ("color", colour)
-            , ("font-size", toString fsize ++ "px")
-            ]
-  in
-    div []
-        [ div [ style foo
-              , class "some-class"
-              , id "some-id"
-              , onClick clicky.address ()
-              ]
-              [ text "lolwut" ]
-        ]
-
 -- () is pronounced 'unit'. Take it to mean 'nothing'
 clicky : Signal.Mailbox ()
-clicky = Signal.mailbox ()
+clicky =
+  Signal.mailbox ()
 
 blueOrGreen : Signal String
 blueOrGreen =
-  let toggleColour _ col = if col == "red" then "green" else "red"
+  let toggleColour _ col =
+        if col == "red" then
+          "green"
+        else
+          "red"
   in
   Signal.foldp toggleColour "red" clicky.signal
 
 fsize : Signal Int
 fsize =
   Signal.foldp (\_ acc -> acc + 10) 20 clicky.signal
+
+
+view : Int -> String -> Html
+view fsize colour =
+  let foo = [ ("color", colour)
+            , ("font-size", toString fsize ++ "px")
+            ]
+  in
+    div
+      []
+      [ div
+          [ style foo
+          , class "some-class"
+          , id "some-id"
+          -- Here we hook up the DOM event to our carefully
+          -- crafted signal graph
+          , onClick clicky.address ()
+          ]
+          [ text "lolwut" ]
+      ]
