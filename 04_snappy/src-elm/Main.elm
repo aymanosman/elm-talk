@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 
 import Http exposing (multipart, stringData)
 import Json.Decode as Json exposing ((:=))
+import Json.Encode as E
 import Task exposing (..)
 import Effects exposing (Never, Effects)
 import StartApp
@@ -37,7 +38,11 @@ update act model =
       (model, postForm "/reverse" "lol" "wut")
 
     MakeJson ->
-      (model, postJson "/reverse-json" <| "{\"text\": \"" ++ model.foo ++ "\"}")
+      let body = "{\"text\": \"" ++ model.foo ++ "\"}" -- manual
+          payload = E.object [("text", E.string model.foo)] -- using Json.Encode
+          body2 = E.encode 0 payload
+      in
+      (model, postJson "/reverse-json" body2)
 
     FailedLol httpError ->
       ({model | response = toString httpError }, Effects.none)
