@@ -14,11 +14,20 @@ numClicks =
 
 {-
 
-  foldp will take some explanation...
+foldp will take some explanation...
 
-  First off the type of Mouse.clicks is `Signal ()`, which
-  is pronounced signal of unit. Unit signifies that there
-  is no data associated with the click event.
+First off the type of Mouse.clicks is `Signal ()`, which
+is pronounced signal of unit. Unit signifies that there
+is no data associated with the click event.
+
+our goal, representing the number of clicks so far
+numClicks : Signal Int
+
+Mouse.clicks : Signal ()
+foldp : (a -> s -> s) -> s -> Signal a -> Signal s
+Specializing foldp to the types we know we want and have
+foldp' : (() -> Int -> Int) -> Int -> Signal () -> Signal Int
+
 
 -}
 
