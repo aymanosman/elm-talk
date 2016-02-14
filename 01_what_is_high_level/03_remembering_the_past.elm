@@ -1,12 +1,16 @@
 import Html exposing (..)
 import Mouse
 
+main : Signal Html
+main =
+  Signal.map view numClicks
+
 numClicks : Signal Int
 numClicks =
   -- This is our focus. Given a signal of mouse clicks, we
   -- produce a new signal of the number of times the mouse
   -- was clicked so far.
-  Signal.foldp (\click_but_ignore b -> b + 1) 0 Mouse.clicks
+  Signal.foldp (\_ b -> b + 1) 0 Mouse.clicks
 
 {-
 
@@ -20,8 +24,4 @@ numClicks =
 
 view : Int -> Html
 view clicks =
-  text <| "Number of clicks: " ++ toString clicks
-
-main : Signal Html
-main =
-  Signal.map view numClicks
+  text ("Number of clicks: " ++ toString clicks)
