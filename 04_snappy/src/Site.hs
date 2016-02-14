@@ -9,7 +9,6 @@ import qualified Data.ByteString.Char8 as BS
 import           Data.Monoid ((<>))
 import           Data.Aeson
 import           Snap.Core
--- import qualified Snap.CORS as CORS
 import           Snap.Snaplet
 import           Snap.Snaplet.Session.Backends.CookieSession
 import           Snap.Util.FileServe
@@ -21,8 +20,6 @@ import Text.Printf (printf)
 
 
 ------------------------------------------------------------------------------
--- wrap :: Handler App App () -> Handler App App ()
--- wrap = CORS.applyCORS CORS.defaultOptions
 
 handleReverse :: Handler App App ()
 handleReverse =
@@ -37,10 +34,13 @@ handleReverse =
          Just t ->
            writeBS ("{\"text\": \"" <> BS.reverse t <> "\"}")
 
+
 data Payload = Payload { payloadText :: String }
 
+-- Example of manually marshalling data, see mascot for auto derived version
 instance ToJSON Payload where
-  toJSON (Payload text) = object ["text" .= text]
+  toJSON (Payload text) =
+    object ["text" .= text]
 
 instance FromJSON Payload where
   parseJSON (Object v) =
@@ -54,13 +54,11 @@ handleReverseJson =
   $ do b <- readRequestBody 1000 -- read no more than 1000 bytes
        liftIO $ printf "PPP %s\n" (show b)
        case eitherDecode b of
-            Left err ->
-              writeJson $ object ["err" .= err]
+         Left err ->
+           writeJson $ object ["err" .= err]
 
-            Right (Payload t) ->
-              writeJson $ toJSON (Payload (reverse t))
-
-
+         Right (Payload t) ->
+           writeJson $ toJSON (Payload (reverse t))
 
 
 writeJson :: (MonadSnap m, ToJSON a) => a -> m ()
