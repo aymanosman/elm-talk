@@ -26,3 +26,16 @@ numClicks : Signal Int
 numClicks =
   Signal.foldp (\a b -> b + 1) 0 Mouse.clicks
 
+
+{-
+The full Signal API
+http://package.elm-lang.org/packages/elm-lang/core/3.0.0/Signal
+
+Some of the API
+
+map : (a -> b) -> Signal a -> Signal b
+filter : (a -> Bool) -> a -> Signal a -> Signal a
+merge : Signal a -> Signal a -> Signal a
+foldp : (a -> s -> s) -> s -> Signal a -> Signal s
+
+-}
