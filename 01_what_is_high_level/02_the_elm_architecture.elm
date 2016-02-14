@@ -3,13 +3,13 @@ import Html.Events exposing (onClick)
 import StartApp.Simple as StartApp
 
 {-
-  In the 'elm architecture', all apps break down into the same
-  three components. Model, view and update.
+In the 'elm architecture', all apps break down into the same
+three components. Model, update and view.
 
-  https://github.com/evancz/elm-architecture-tutorial/
+https://github.com/evancz/elm-architecture-tutorial/
 
-  http://elm-lang.org/blog/blazing-fast-html
- -}
+http://elm-lang.org/blog/blazing-fast-html
+-}
 
 main : Signal Html
 main =
