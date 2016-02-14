@@ -66,7 +66,7 @@ post' : String -> List ( String, String ) -> Http.Body -> Effects Action
 post' url headers body =
   let
     dec =
-      Json.oneOf [Json.map Ok' fooResponse, Json.map Err' errResponse]
+      Json.oneOf [Json.map Ok fooResponse, Json.map Err errResponse]
     req =
       { verb = "POST"
       , headers = headers
@@ -74,7 +74,9 @@ post' url headers body =
       , body = body
       }
   in
-    Http.send Http.defaultSettings req -- dec "/reverse" body
+    Http.send Http.defaultSettings req
+      |> Task.map (\resp -> (Debug.log "TTT" resp.value, resp))
+      |> Task.map (\(_, resp)   -> resp)
       |> Http.fromJson dec
       |> Task.toResult
       |> Task.map handleFoo
@@ -87,6 +89,8 @@ postJson url body =
   in
     post' url headers <| Http.string body
 
+type alias ServerResponse = Result ErrR Foo
+
 handleFoo : Result Http.Error ServerResponse -> Action
 handleFoo resp =
   case resp of
@@ -95,16 +99,13 @@ handleFoo resp =
 
     Ok resp ->
       case resp of
-        Err' errR ->
+        Err errR ->
           FailedParse errR.err
 
-        Ok' foo ->
+        Ok foo ->
           NiceLol foo
 
 
-type ServerResponse
-  = Ok' Foo
-  | Err' ErrR
 
 type alias Foo = { text : String }
 fooResponse : Json.Decoder Foo

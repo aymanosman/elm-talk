@@ -17,6 +17,7 @@ import           Snap.Util.FileServe
 import           Application
 import Control.Monad.Trans (liftIO)
 import Control.Applicative (empty)
+import Text.Printf (printf)
 
 
 ------------------------------------------------------------------------------
@@ -51,13 +52,13 @@ instance FromJSON Payload where
 handleReverseJson :: Handler App App ()
 handleReverseJson =
   method POST
-  $ do _lol <- getPostParam "todo get json" -- getJSON
-       mpayload <- decode <$> readRequestBody 5000
+  $ do mpayload <- eitherDecode <$> readRequestBody 5000 -- don't read more than 5000 bytes
+       liftIO $ printf "PPP %s" ("fdl" :: String) --bb
        case mpayload of
-            Nothing ->
-              writeJson $ object ["err" .= ("bork" :: String)]
+            Left err ->
+              writeJson $ object ["err" .= err]
 
-            Just (Payload t) ->
+            Right (Payload t) ->
               writeJson $ toJSON (Payload (reverse t))
 
 

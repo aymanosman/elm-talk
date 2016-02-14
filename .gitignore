@@ -1,3 +1,4 @@
+TAGS
 .tern-port
 elm-stuff
 /elm.js
@@ -23,6 +24,7 @@ elm-stuff
 /04_snappy/node_modules
 /04_snappy/static/Main.js
 /04_snappy/elm-stuff
+/04_snappy/elm.js
 
 /05_mascot/.stack-work
 /05_mascot/static/Main.js
