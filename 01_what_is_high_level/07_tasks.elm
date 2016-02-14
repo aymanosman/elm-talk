@@ -1,6 +1,5 @@
 import Task exposing (..)
 import Http
-import Date
 import Html exposing (..)
 
 main : Signal Html
@@ -13,27 +12,23 @@ Tasks -- performing side effects
 
 -}
 
-values : Signal (Maybe Date.Date)
+values : Signal String
 values =
   result.signal
 
-result : Signal.Mailbox (Maybe Date.Date)
+result : Signal.Mailbox String
 result =
-  Signal.mailbox Nothing
+  Signal.mailbox ""
 
 port run : Task Http.Error ()
 port run =
-  foo `andThen` (sendToAddress result.address)
+  getDate `andThen` (sendToAddress result.address)
 
-foo =
+getDate : Task Http.Error String
+getDate =
   Http.getString "http://www.timeapi.org/utc/now"
-    |> Task.map Date.fromString
 
-sendToAddress addr mdate =
-  case mdate of
-    Err _ ->
-      Signal.send addr Nothing
-
-    Ok d ->
-      Signal.send addr (Just d)
+sendToAddress : Signal.Address a -> a -> Task c ()
+sendToAddress addr x =
+  Signal.send addr (Debug.log "got something" x)
 
