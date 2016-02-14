@@ -45,16 +45,16 @@ instance ToJSON Payload where
 
 instance FromJSON Payload where
   parseJSON (Object v) =
-    Payload <$> v .: "text"
+    Payload <$> v.:"text"
   parseJSON _ = empty
 
 
 handleReverseJson :: Handler App App ()
 handleReverseJson =
   method POST
-  $ do mpayload <- eitherDecode <$> readRequestBody 5000 -- don't read more than 5000 bytes
-       liftIO $ printf "PPP %s" ("fdl" :: String) --bb
-       case mpayload of
+  $ do b <- readRequestBody 1000 -- read no more than 1000 bytes
+       liftIO $ printf "PPP %s\n" (show b)
+       case eitherDecode b of
             Left err ->
               writeJson $ object ["err" .= err]
 
