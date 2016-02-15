@@ -29,4 +29,4 @@ References
 
 ## Misc
 * [Cpp Andrei Alexandrescu](https://www.youtube.com/watch?v=LIb3L4vKZ7U) If you
-shoot for compisition, the code almost writes itself.
+shoot for composition, the code almost writes itself.

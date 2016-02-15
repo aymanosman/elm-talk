@@ -10,3 +10,5 @@ make use of:
 
 Run `elm-reactor --port 8000` in this folder and go to http://localhost:8000 to have an Elm
 environment up and running.
+
+When you are starting out [http://elm-lang.org/try](http://elm-lang.org/try) is a great place to experiment.
