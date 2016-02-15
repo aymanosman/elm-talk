@@ -32,6 +32,8 @@ port toJSPort =
 -- notice how similar this looks to an ordinary definition
 
 -- Try replacing the above Mouse.position with another signal
+-- remember this particular example needs to be compiled
+-- manually.
 
 mySig : Signal (Int, Int)
 mySig =
