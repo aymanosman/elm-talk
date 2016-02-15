@@ -13,4 +13,6 @@ environment up and running.
 
 When you are starting out [http://elm-lang.org/try](http://elm-lang.org/try) is a great place to experiment.
 
+Read the [docs](http://elm-lang.org/docs)
+
 Read Evan's [senior thesis](http://elm-lang.org/papers/concurrent-frp.pdf) on Elm.
