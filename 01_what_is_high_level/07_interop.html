@@ -1,0 +1,31 @@
+<!doctype html>
+  <head>
+    <script type="text/javascript" src="elm.js"></script>
+  </head>
+
+  <body>
+  </body>
+
+  <script type="text/javascript">
+   var app = Elm.fullscreen(Elm.App, {
+     // Incoming ports require an initial value (because
+     // Signals must always be defined)
+     toElmPort: ""
+   });
+
+   // Send messages to Elm via incoming ports
+   var n = 0;
+   var i = setInterval(function(){
+     app.ports.toElmPort.send(""+n);
+     n++;
+   }, 1000);
+
+
+   // Receive messages from Elm via outgoing ports
+   app.ports.toJSPort.subscribe(function(val) {
+     console.log("From Elm: " + val);
+   });
+
+
+  </script>
+</html>
