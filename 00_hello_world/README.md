@@ -22,3 +22,6 @@ file.
 
 You can control whether you output HTML or a JavaScript module with the
 `--output` command line option, see `elm-make --help`.
+
+There is a way to embed Elm as a subcomponent of the page, which we will cover
+later.

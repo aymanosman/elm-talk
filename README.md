@@ -8,3 +8,5 @@ make use of:
 - elm-make
 - elm-reactor
 
+Run `elm-reactor --port 8000` in this folder and go to http://localhost:8000 to have an Elm
+environment up and running.
