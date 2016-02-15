@@ -28,3 +28,14 @@ port toElmPort : Signal String
 port toJSPort : Signal (Int, Int)
 port toJSPort =
   Mouse.position
+
+-- notice how similar this looks to an ordinary definition
+
+-- Try replacing the above Mouse.position with another signal
+
+mySig : Signal (Int, Int)
+mySig =
+  let multOf5 (x, y) =
+        x % 5 == 0 && y % 5 == 0
+  in
+  Signal.filter multOf5 (0, 0) Mouse.position
