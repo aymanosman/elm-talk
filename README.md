@@ -12,3 +12,5 @@ Run `elm-reactor --port 8000` in this folder and go to http://localhost:8000 to 
 environment up and running.
 
 When you are starting out [http://elm-lang.org/try](http://elm-lang.org/try) is a great place to experiment.
+
+Read Evan's [senior thesis](http://elm-lang.org/papers/concurrent-frp.pdf) on Elm.
