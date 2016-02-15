@@ -7,32 +7,32 @@
   </body>
 
   <script type="text/javascript">
-   var app = Elm.fullscreen(Elm.App, {portValues: ""});
+   var app = Elm.fullscreen(Elm.App, {incomingPort: ""});
 
    oneWay();
    /* orAnother(); */
 
 
    function oneWay() {
-    app.ports.portValues.send("one");
+    app.ports.incomingPort.send("one");
 
     setTimeout(function() {
-      app.ports.portValues.send("two");
+      app.ports.incomingPort.send("two");
     }, 1000);
 
     setTimeout(function() {
-      app.ports.portValues.send("three");
+      app.ports.incomingPort.send("three");
     }, 2500);
 
     setTimeout(function() {
-      app.ports.portValues.send("four");
+      app.ports.incomingPort.send("four");
     }, 4000);
    }
 
    function orAnother() {
      var n = 0;
      var i = setInterval(function(){
-       app.ports.portValues.send(""+n);
+       app.ports.incomingPort.send(""+n);
        n++;
      }, 1000);
    }

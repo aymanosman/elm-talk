@@ -10,6 +10,9 @@ main =
 
 Tasks -- performing side effects
 
+As a side effect of being a 'pure' language, Elm will feel
+somewhat ceremonious when it comes to performing IO.
+
 -}
 
 values : Signal String
@@ -18,10 +21,11 @@ values =
 
 result : Signal.Mailbox String
 result =
-  Signal.mailbox ""
+  Signal.mailbox "loading..."
 
-port run : Task Http.Error ()
-port run =
+-- This is weird and will require some explanation
+port runasdasdj : Task Http.Error ()
+port runasdasdj =
   getDate `andThen` (sendToAddress result.address)
 
 getDate : Task Http.Error String

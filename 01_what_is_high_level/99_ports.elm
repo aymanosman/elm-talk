@@ -6,5 +6,5 @@ main : Signal Html
 main =
   Signal.map text portValues
 
-port portValues : Signal String
+port incomingPort : Signal String
 

@@ -10,6 +10,9 @@ Given a UI that displays the current mouse position and a
 UI that displays the current state of the spacebar,
 construct a UI that displays one or the other.
 
+You'll find the function you need in the Signal module:
+http://package.elm-lang.org/packages/elm-lang/core/3.0.0/Signal
+
 -}
 
 main : Signal Html
