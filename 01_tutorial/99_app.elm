@@ -129,8 +129,6 @@ view addr model =
   in
   div []
       [ div [] [ text model.welcomeText ]
-      , div' <| button [ onClick addr MakeBork ]
-                       [ text "Borked!" ]
       , div' <| button [ onClick addr MakeLol ]
                        [ text "Make form-urlencoded request!" ]
       , div' <| button [ onClick addr MakeJson ]
@@ -148,7 +146,7 @@ view addr model =
 init : (Model, Effects Action)
 init =
   let model =
-        { welcomeText = "Hello Snappy"
+        { welcomeText = "Hello Elm"
         , foo = ""
         , response = ""
         }
