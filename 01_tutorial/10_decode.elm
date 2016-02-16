@@ -33,3 +33,8 @@ dec : Json.Decoder String
 dec =
   ("payloadText" := Json.string)
 
+
+-- type alias Payload =
+--   { payloadText : String
+--   }
+
