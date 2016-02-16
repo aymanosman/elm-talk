@@ -1,9 +1,9 @@
-build: app elm
+build: foo elm
 
 serve:
 	stack exec mascot
 
-app:
+foo:
 	stack build
 
 elm:
