@@ -21,12 +21,16 @@ site =
 
      get "/" $ file "static/index.html"
 
-     post "/reverse"
-       $ do t <- param "text" -- 'raises' if param not found, caught by 'rescue'
-            json . toJSON . Payload $ reverse t
-            `rescue`
-            (\msg ->
-              json $ object ["err" .= toJSON msg])
+     let handleRev =
+           do t <- param "text" -- 'raises' if param not found, caught by 'rescue'
+              json . toJSON . Payload $ reverse t
+              `rescue`
+              (\msg ->
+                json $ object ["err" .= toJSON msg])
+
+     get "/reverse" handleRev
+
+     post "/reverse" handleRev
 
      post "/reverse-json"
        $ do mpayload <- jsonData -- decode <$> body
