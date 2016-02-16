@@ -9,7 +9,12 @@ import Json.Decode as Json
 import Task
 import StartApp
 
--- This example is taken from https://github.com/evancz/elm-architecture-tutorial/tree/master/examples/5
+{-
+This example is taken from
+https://github.com/evancz/elm-architecture-tutorial/tree/master/examples/5
+
+http://package.elm-lang.org/packages/evancz/elm-effects/2.0.1/Effects
+-}
 
 
 -- MODEL
