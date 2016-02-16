@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 
 import Http exposing (multipart, stringData)
 import Json.Decode as Json exposing ((:=))
+import Json.Encode as E
 import Task exposing (..)
 import Effects exposing (Never, Effects)
 import StartApp
@@ -19,7 +20,7 @@ type alias Model =
 
 type Action
   = Noop
-  | MakeForm
+  | MakeLol
   | MakeBork
   | MakeJson
   | FailedLol Http.Error
@@ -27,28 +28,21 @@ type Action
   | NiceLol Foo
   | Text String
 
-init : (Model, Effects Action)
-init =
-  let model =
-        { welcomeText = "Mascot"
-        , foo = ""
-        , response = ""
-        }
-  in
-    (model, Effects.none)
-
 update : Action -> Model -> (Model, Effects Action)
 update act model =
   case act of
-    MakeForm ->
+    MakeLol ->
       (model, postForm "/reverse" "text" model.foo)
 
     MakeBork ->
       (model, postForm "/reverse" "lol" "wut")
 
     MakeJson ->
-      (model, postJson "/reverse-json" <|
-         "{\"payloadText\": \"" ++ model.foo ++ "\"}")
+      let body = "{\"text\": \"" ++ model.foo ++ "\"}" -- manual
+          payload = E.object [("payloadText", E.string model.foo)] -- using Json.Encode
+          body2 = E.encode 0 payload
+      in
+      (model, postJson "/reverse-json" body2)
 
     FailedLol httpError ->
       ({model | response = toString httpError }, Effects.none)
@@ -73,10 +67,11 @@ postForm url key val =
   in
     post' url headers <| Http.string (key ++ "=" ++ val)
 
+post' : String -> List ( String, String ) -> Http.Body -> Effects Action
 post' url headers body =
   let
     dec =
-      Json.oneOf [Json.map Ok' fooResponse, Json.map Err' errResponse]
+      Json.oneOf [Json.map Ok fooResponse, Json.map Err errResponse]
     req =
       { verb = "POST"
       , headers = headers
@@ -84,7 +79,9 @@ post' url headers body =
       , body = body
       }
   in
-    Http.send Http.defaultSettings req -- dec "/reverse" body
+    Http.send Http.defaultSettings req
+      |> Task.map (\resp -> (Debug.log "TTT" resp.value, resp))
+      |> Task.map (\(_, resp)   -> resp)
       |> Http.fromJson dec
       |> Task.toResult
       |> Task.map handleFoo
@@ -97,6 +94,8 @@ postJson url body =
   in
     post' url headers <| Http.string body
 
+type alias ServerResponse = Result ErrR Foo
+
 handleFoo : Result Http.Error ServerResponse -> Action
 handleFoo resp =
   case resp of
@@ -105,18 +104,15 @@ handleFoo resp =
 
     Ok resp ->
       case resp of
-        Err' errR ->
+        Err errR ->
           FailedParse errR.err
 
-        Ok' foo ->
+        Ok foo ->
           NiceLol foo
 
 
-type ServerResponse
-  = Ok' Foo
-  | Err' ErrR
 
-type alias Foo = { payloadText : String }
+type alias Foo = { text : String }
 fooResponse : Json.Decoder Foo
 fooResponse =
   Json.object1 Foo ("payloadText" := Json.string)
@@ -135,7 +131,7 @@ view addr model =
       [ div [] [ text model.welcomeText ]
       , div' <| button [ onClick addr MakeBork ]
                        [ text "Borked!" ]
-      , div' <| button [ onClick addr MakeForm ]
+      , div' <| button [ onClick addr MakeLol ]
                        [ text "Make form-urlencoded request!" ]
       , div' <| button [ onClick addr MakeJson ]
                        [ text "Make json request!" ]
@@ -149,8 +145,16 @@ view addr model =
             ]
       ]
 
+init : (Model, Effects Action)
+init =
+  let model =
+        { welcomeText = "Hello Snappy"
+        , foo = ""
+        , response = ""
+        }
+  in
+  (model, Effects.none)
 
--- Boilerplate
 
 app : StartApp.App Model
 app =
