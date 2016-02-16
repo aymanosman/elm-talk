@@ -45,41 +45,6 @@ update action model =
       , Effects.none
       )
 
-
--- VIEW
-
-(=>) = (,)
-
-
-view : Signal.Address Action -> Model -> Html
-view address model =
-  div [ style [ "width" => "200px" ] ]
-    [ h2 [headerStyle] [text model.topic]
-    , div [imgStyle model.gifUrl] []
-    , button [ onClick address RequestMore ] [ text "More Please!" ]
-    ]
-
-
-headerStyle : Attribute
-headerStyle =
-  style
-    [ "width" => "200px"
-    , "text-align" => "center"
-    ]
-
-
-imgStyle : String -> Attribute
-imgStyle url =
-  style
-    [ "display" => "inline-block"
-    , "width" => "200px"
-    , "height" => "200px"
-    , "background-position" => "center center"
-    , "background-size" => "cover"
-    , "background-image" => ("url('" ++ url ++ "')")
-    ]
-
-
 -- EFFECTS
 
 getRandomGif : String -> Effects Action
@@ -119,4 +84,39 @@ main =
 port tasks : Signal (Task.Task Never ())
 port tasks =
   app.tasks
+
+
+
+-- VIEW
+
+(=>) = (,)
+
+
+view : Signal.Address Action -> Model -> Html
+view address model =
+  div [ style [ "width" => "200px" ] ]
+    [ h2 [headerStyle] [text model.topic]
+    , div [imgStyle model.gifUrl] []
+    , button [ onClick address RequestMore ] [ text "More Please!" ]
+    ]
+
+
+headerStyle : Attribute
+headerStyle =
+  style
+    [ "width" => "200px"
+    , "text-align" => "center"
+    ]
+
+
+imgStyle : String -> Attribute
+imgStyle url =
+  style
+    [ "display" => "inline-block"
+    , "width" => "200px"
+    , "height" => "200px"
+    , "background-position" => "center center"
+    , "background-size" => "cover"
+    , "background-image" => ("url('" ++ url ++ "')")
+    ]
 
