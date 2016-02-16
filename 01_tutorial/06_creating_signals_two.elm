@@ -26,7 +26,7 @@ type alias Mailbox =
 
 main : Signal Html
 main =
-  Signal.map view blueOrGreen
+  Signal.map2 view fsize blueOrGreen
 
 -- () is pronounced 'unit'. Take it to mean 'nothing'
 clicky : Signal.Mailbox ()
@@ -43,12 +43,26 @@ blueOrGreen =
   in
   Signal.foldp toggleColour "red" clicky.signal
 
-view : String -> Html
-view colour =
-  div
-    [ style [("color", colour)]
-    -- Here we hook up the DOM event to our carefully
-    -- crafted signal graph
-    , onClick clicky.address ()
-    ]
-    [ text "lolwut" ]
+fsize : Signal Int
+fsize =
+  Signal.foldp (\_ acc -> acc + 10) 20 clicky.signal
+
+
+view : Int -> String -> Html
+view fsize colour =
+  let foo = [ ("color", colour)
+            , ("font-size", toString fsize ++ "px")
+            ]
+  in
+    div
+      []
+      [ div
+          [ style foo
+          , class "some-class"
+          , id "some-id"
+          -- Here we hook up the DOM event to our carefully
+          -- crafted signal graph
+          , onClick clicky.address ()
+          ]
+          [ text "lolwut" ]
+      ]
