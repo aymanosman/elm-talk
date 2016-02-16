@@ -35,3 +35,7 @@ The radical idea is to model our user interface as a
 UI = Signal Html or 'Html over time'
 
 -}
+
+-- << is function composition, if this is confusing then know
+-- that the below is equivalent
+-- Signal.map (\mp -> Html.text (toString mp)) Mouse.position
