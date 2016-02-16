@@ -34,6 +34,9 @@ site =
 
      post "/reverse" handleRev
 
+      -- hack to satisfy browser
+     options "/reverse-json" $ text "beam me up!"
+
      post "/reverse-json"
        $ do mpayload <- jsonData -- decode <$> body
             case mpayload of
