@@ -25,6 +25,10 @@ port getReverse =
   Http.get dec "http://localhost:8080/reverse?text=hello+elm"
   `andThen` (Signal.send reverser.address)
 
+-- Here we are saying we are expecting to receive JSON
+-- encoded data with the following shape:
+-- {"payloadText": ..., "otherKey": ...}
+-- Here we grab the data we want and throw the rest away.
 dec : Json.Decoder String
 dec =
   ("payloadText" := Json.string)

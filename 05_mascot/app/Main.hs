@@ -23,7 +23,9 @@ site =
 
      let handleRev =
            do t <- param "text" -- 'raises' if param not found, caught by 'rescue'
-              json . toJSON . Payload $ reverse t
+              json $ object ["payloadText" .= toJSON (reverse (t :: String))
+                            , "foo" .= "lol"
+                            ]
               `rescue`
               (\msg ->
                 json $ object ["err" .= toJSON msg])
