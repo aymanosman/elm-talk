@@ -59,5 +59,5 @@ mystart config =
   let actions = Signal.mailbox NoOp
       models =
         Signal.foldp config.update config.model actions.signal
-  in 
+  in
   Signal.map (view actions.address) models
